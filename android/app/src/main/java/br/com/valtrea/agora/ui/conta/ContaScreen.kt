@@ -203,7 +203,7 @@ fun ContaScreen(contentPadding: PaddingValues, aoAbrirAdmin: () -> Unit = {}) {
         }
         Text("Seus dados", style = MaterialTheme.typography.titleMedium)
         Text(
-            "Baixe uma cópia do seu cadastro, do bairro, das suas iniciativas, dos seus apoios e das suas denúncias, em um arquivo que " +
+            "Baixe uma cópia do seu cadastro, das suas reservas, dos seus estabelecimentos e das suas denúncias, em um arquivo que " +
                 "outros serviços conseguem ler (JSON).",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

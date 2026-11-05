@@ -10,9 +10,8 @@
 | --- | --- | --- | --- | --- | --- |
 | Informações pessoais → Nome | Nome | Sim | Não* | Obrigatório | Funcionalidade do app, Gerenciamento da conta |
 | Informações pessoais → Endereço de e-mail | E-mail | Sim | Não* | Obrigatório | Funcionalidade do app, Gerenciamento da conta, Comunicações do desenvolvedor |
-| Mensagens → Outras mensagens no app | Iniciativas e atualizações publicadas (públicas, com o primeiro nome) | Sim | Não* | Opcional | Funcionalidade do app |
-| Localização → Localização aproximada | Bairro escolhido pela pessoa (digitado, sem GPS) | Sim | Não* | Opcional | Funcionalidade do app |
-| Atividade no app → Outras ações | Apoios e denúncias | Sim | Não* | Opcional | Funcionalidade do app |
+| Informações pessoais → Número de telefone | Telefone opcional na reserva (só o estabelecimento vê) | Sim | Não* | Opcional | Funcionalidade do app |
+| Atividade no app → Outras ações | Reservas, estabelecimentos cadastrados e denúncias | Sim | Não* | Opcional | Funcionalidade do app |
 | Informações e desempenho do app → Registros de falhas / Diagnóstico | Erros (Sentry) | Sim, **só se compilado com SENTRY_DSN** | Não* | Obrigatório | Análise |
 
 \* Envio a prestadores que processam dados em nosso nome (Render, Neon, Resend, Sentry, GitHub) não conta como compartilhamento para o Google.
@@ -21,7 +20,7 @@
 
 ## Classificação de conteúdo
 
-- Interação entre usuários: **Sim** (moradores publicam iniciativas públicas e apoiam as dos outros). Moderação: botão Denunciar em cada iniciativa; com 3 denúncias ela fica oculta até a revisão no painel de administração.
+- Interação entre usuários: **Sim** (clientes reservam horários de estabelecimentos). Moderação: todo estabelecimento passa por análise antes de aparecer; botão Denunciar; com 3 denúncias ele sai da busca até nova análise.
 - Sem violência, conteúdo sexual, jogos de azar ou compras.
 
 ## Público-alvo

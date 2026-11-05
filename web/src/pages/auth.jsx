@@ -14,14 +14,14 @@ export function EntrarPage() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const { enviando, erro, executar } = useEnvio()
-  if (perfil) return <Navigate to="/painel" replace />
+  if (perfil) return <Navigate to="/" replace />
 
   const enviar = (e) => {
     e.preventDefault()
     executar(async () => {
       const tokens = await chamar('POST', '/auth/login', { email, senha }, { autenticar: false })
       await entrar(tokens)
-      navegar('/painel')
+      navegar('/')
     })
   }
 
@@ -54,8 +54,8 @@ export function CadastroPage() {
   const [erros, setErros] = useState({})
   const acabouDeCriar = useRef(false)
   const { enviando, erro, executar } = useEnvio()
-  // Quem acabou de criar a conta vai para a confirmação do e-mail, não para o bairro
-  if (perfil) return <Navigate to={acabouDeCriar.current ? '/confirmar-email' : '/painel'} replace />
+  // Quem acabou de criar a conta vai para a confirmação do e-mail, não para a busca
+  if (perfil) return <Navigate to={acabouDeCriar.current ? '/confirmar-email' : '/'} replace />
 
   const muda = (campo) => (e) => setDados({ ...dados, [campo]: e.target.value })
 
@@ -113,14 +113,14 @@ export function ConfirmarEmailPage() {
   const [aviso, setAviso] = useState('')
   const { enviando, erro, executar } = useEnvio()
   if (!carregando && !perfil) return <Navigate to="/entrar" replace />
-  if (perfil?.emailConfirmado) return <Navigate to="/painel" replace />
+  if (perfil?.emailConfirmado) return <Navigate to="/" replace />
 
   const confirmar = (e) => {
     e.preventDefault()
     executar(async () => {
       await chamar('POST', '/auth/confirmar-email', { codigo })
       await recarregar()
-      navegar('/painel')
+      navegar('/')
     })
   }
 

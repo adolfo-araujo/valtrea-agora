@@ -20,7 +20,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.remember
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.valtrea.agora.data.MetricasAdmin
-import br.com.valtrea.agora.data.ParaRevisar
+import br.com.valtrea.agora.data.ParaAnalisar
+import br.com.valtrea.agora.data.RecusaRequest
 import br.com.valtrea.agora.data.SemanaAdmin
 import br.com.valtrea.agora.data.ValtreaApi
 import br.com.valtrea.agora.data.mensagemAmigavel
@@ -54,20 +57,21 @@ class AdminViewModel(private val api: ValtreaApi) : ViewModel() {
         private set
     var erro by mutableStateOf<String?>(null)
         private set
-    var fila by mutableStateOf<List<ParaRevisar>?>(null)
+    var fila by mutableStateOf<List<ParaAnalisar>?>(null)
         private set
-    var avisoModeracao by mutableStateOf<String?>(null)
+    var avisoAnalise by mutableStateOf<String?>(null)
         private set
 
-    fun decidir(item: ParaRevisar, manter: Boolean) {
+    /** [motivo] nulo = aprovar. */
+    fun decidir(item: ParaAnalisar, motivo: String?) {
         viewModelScope.launch {
-            runCatching { if (manter) api.manter(item.id) else api.remover(item.id) }
+            runCatching { if (motivo == null) api.aprovar(item.id) else api.recusar(item.id, RecusaRequest(motivo)) }
                 .onSuccess {
                     fila = fila?.filterNot { it.id == item.id }
-                    avisoModeracao = if (manter) "\"${item.titulo}\" voltou a aparecer."
-                    else "\"${item.titulo}\" foi removida e o autor foi avisado."
+                    avisoAnalise = if (motivo == null) "\"${item.nome}\" aprovado: já aparece na busca."
+                    else "\"${item.nome}\" recusado. O dono foi avisado."
                 }
-                .onFailure { avisoModeracao = it.mensagemAmigavel() }
+                .onFailure { avisoAnalise = it.mensagemAmigavel() }
         }
     }
 
@@ -79,7 +83,7 @@ class AdminViewModel(private val api: ValtreaApi) : ViewModel() {
             runCatching { api.metricasAdmin() }
                 .onSuccess { metricas = it }
                 .onFailure { erro = it.mensagemAmigavel() }
-            runCatching { api.moderacao() }.onSuccess { fila = it }
+            runCatching { api.filaAnalise() }.onSuccess { fila = it }
             carregando = false
         }
     }
@@ -97,21 +101,23 @@ fun AdminScreen(aoVoltar: () -> Unit, contentPadding: PaddingValues) {
         aoAtualizar = vm::carregar,
         aoVoltar = aoVoltar,
         contentPadding = contentPadding,
-        moderacao = { FilaModeracao(vm.fila, vm.avisoModeracao, vm::decidir) },
+        moderacao = { FilaAnalise(vm.fila, vm.avisoAnalise, vm::decidir) },
     )
 }
 
-/** Iniciativas ocultas por denúncias. Mostra o texto e os motivos, nunca quem denunciou. */
+/** Estabelecimentos novos, corrigidos ou denunciados. Mostra os dados do negócio e os motivos, nunca quem denunciou. */
 @Composable
-private fun FilaModeracao(fila: List<ParaRevisar>?, aviso: String?, aoDecidir: (ParaRevisar, Boolean) -> Unit) {
-    Secao("Moderação")
+private fun FilaAnalise(fila: List<ParaAnalisar>?, aviso: String?, aoDecidir: (ParaAnalisar, String?) -> Unit) {
+    var recusando by remember { mutableStateOf<String?>(null) }
+    var motivo by remember { mutableStateOf("") }
+    Secao("Análise de estabelecimentos")
     Text(
-        "Iniciativas ocultas depois de 3 denúncias. Sem decisão em 60 dias, são apagadas.",
+        "Confira se o endereço e o telefone existem antes de aprovar.",
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     aviso?.let { Text(it, color = MaterialTheme.colorScheme.primary) }
-    if (fila?.isEmpty() == true) Text("Nada esperando revisão.")
+    if (fila?.isEmpty() == true) Text("Nada esperando análise.")
     fila?.forEach { item ->
         Column(
             Modifier
@@ -121,21 +127,40 @@ private fun FilaModeracao(fila: List<ParaRevisar>?, aviso: String?, aoDecidir: (
                 .padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Text(item.titulo, fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() })
+            Text(item.nome, fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() })
             Text(
-                "${item.categoria.rotulo} · ${item.bairro} · por ${item.autor}",
+                "${item.tipo.rotulo} · dono: ${item.dono}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Text(item.descricao, style = MaterialTheme.typography.bodyMedium)
-            Text(
-                "Denúncias: " + item.denuncias.entries.joinToString("; ") { "${it.key.rotulo} (${it.value})" },
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { aoDecidir(item, true) }) { Text("Manter") }
-                TextButton(onClick = { aoDecidir(item, false) }) {
-                    Text("Remover", color = MaterialTheme.colorScheme.error)
+            Text("${item.endereco} · ${item.bairro}, ${item.cidade} - ${item.uf} · ${item.telefone}")
+            item.descricao?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+            if (item.denuncias.isNotEmpty()) {
+                Text(
+                    "Denúncias: " + item.denuncias.entries.joinToString("; ") { "${it.key.rotulo} (${it.value})" },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+            if (recusando == item.id) {
+                OutlinedTextField(
+                    value = motivo,
+                    onValueChange = { if (it.length <= 300) motivo = it },
+                    label = { Text("Motivo (vai para o dono)") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = { aoDecidir(item, motivo.trim()); recusando = null; motivo = "" }, enabled = motivo.trim().length >= 5) {
+                        Text("Recusar")
+                    }
+                    TextButton(onClick = { recusando = null }) { Text("Voltar") }
+                }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = { aoDecidir(item, null) }) { Text("Aprovar") }
+                    TextButton(onClick = { recusando = item.id }) {
+                        Text("Recusar…", color = MaterialTheme.colorScheme.error)
+                    }
                 }
             }
         }
@@ -168,7 +193,7 @@ fun PainelAdmin(
             modifier = Modifier.semantics { heading() },
         )
         Text(
-            "Só números somados de todas as contas. Nenhum nome, e-mail ou apoio de alguém aparece aqui.",
+            "Só números somados de todas as contas. Nenhum nome, e-mail ou reserva de alguém aparece aqui.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -191,15 +216,14 @@ fun PainelAdmin(
             )
             Secao("Uso")
             Numeros(
-                "Bairros" to m.uso.bairros.toString(),
-                "Bairros com iniciativas" to m.uso.bairrosComIniciativas.toString(),
-                "Iniciativas" to m.uso.iniciativas.toString(),
-                "Abertas ou em andamento" to m.uso.ativas.toString(),
-                "Resolvidas" to m.uso.resolvidas.toString(),
-                "Publicadas em 30 dias" to m.uso.iniciativas30Dias.toString(),
-                "Apoios" to m.uso.apoios.toString(),
-                "Apoios em 30 dias" to m.uso.apoios30Dias.toString(),
-                "Esperando revisão" to m.uso.ocultas.toString(),
+                "Estabelecimentos aprovados" to m.uso.aprovados.toString(),
+                "Esperando análise" to m.uso.emAnalise.toString(),
+                "Horários vagos futuros" to m.uso.horariosLivres.toString(),
+                "Reservas em 30 dias" to m.uso.reservas30Dias.toString(),
+                "Reservas marcadas" to m.uso.reservasFuturas.toString(),
+                "Atendidas" to m.uso.atendidas.toString(),
+                "Não compareceram" to m.uso.naoCompareceu.toString(),
+                "Canceladas em 30 dias" to m.uso.canceladas30Dias.toString(),
             )
             Secao("Cadastros por semana")
             GraficoSemanas(m.cadastrosPorSemana)

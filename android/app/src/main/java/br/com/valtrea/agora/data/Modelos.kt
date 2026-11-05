@@ -36,12 +36,10 @@ data class Perfil(
     val nome: String,
     val email: String,
     val emailConfirmado: Boolean,
-    /** Falso quando há Termos novos para aceitar: a tela do bairro mostra o aviso. */
+    /** Falso quando há Termos novos para aceitar: a tela de horários mostra o aviso. */
     val termosAceitos: Boolean = true,
     /** Conta de administração: a tela Conta mostra o atalho para o painel. */
     val admin: Boolean = false,
-    /** Nulo até a pessoa escolher. */
-    val bairro: Bairro? = null,
 )
 
 @Serializable
@@ -54,118 +52,187 @@ data class AtualizarPerfilRequest(val nome: String)
 data class ExcluirContaRequest(val senha: String)
 
 @Serializable
-data class Bairro(
-    val id: String,
-    val nome: String,
-    val cidade: String,
-    val uf: String,
-    /** Abertas ou em andamento. */
-    val iniciativas: Long = 0,
-) {
-    val nomeCompleto get() = "$nome, $cidade - $uf"
+enum class Tipo(val rotulo: String) {
+    SALAO("Salão de beleza"),
+    BARBEARIA("Barbearia"),
+    MANICURE("Manicure e pedicure"),
+    ESTETICA("Estética"),
+    SOBRANCELHA("Sobrancelha e cílios"),
+    MASSAGEM("Massagem"),
+    PET("Banho e tosa (pet)"),
+    OUTRO("Outro serviço"),
 }
 
 @Serializable
-data class BairroRequest(val nome: String, val cidade: String, val uf: String)
-
-@Serializable
-data class MudarBairroRequest(val bairroId: String?)
-
-/** Categorias da API, com o nome mostrado nas telas. */
-@Serializable
-enum class Categoria(val rotulo: String) {
-    ILUMINACAO("Iluminação"),
-    LIMPEZA("Limpeza e lixo"),
-    SEGURANCA("Segurança"),
-    TRANSITO("Trânsito"),
-    CALCADAS_E_RUAS("Calçadas e ruas"),
-    AREAS_VERDES("Praças e áreas verdes"),
-    SAUDE("Saúde"),
-    EDUCACAO("Educação"),
-    LAZER("Esporte e lazer"),
-    TRANSPORTE("Transporte público"),
-    OUTROS("Outros"),
+enum class StatusEstabelecimento(val rotulo: String) {
+    EM_ANALISE("Em análise"),
+    APROVADO("Aprovado: aparece na busca"),
+    RECUSADO("Precisa de ajuste"),
 }
 
 @Serializable
-enum class Fase(val rotulo: String) {
-    ABERTA("Aberta"),
-    EM_ANDAMENTO("Em andamento"),
-    RESOLVIDA("Resolvida"),
-    ARQUIVADA("Arquivada");
+enum class StatusHorario { LIVRE, RESERVADO, CANCELADO }
 
-    val ativa get() = this == ABERTA || this == EM_ANDAMENTO
+@Serializable
+enum class StatusReserva(val rotulo: String) {
+    CONFIRMADA("Confirmada"),
+    CANCELADA_CLIENTE("Cancelada pelo cliente"),
+    CANCELADA_ESTABELECIMENTO("Cancelada pelo estabelecimento"),
+    ATENDIDA("Atendida"),
+    NAO_COMPARECEU("Não compareceu"),
 }
 
 @Serializable
 enum class MotivoDenuncia(val rotulo: String) {
-    OFENSIVO("Xingamento, ataque ou preconceito"),
-    DADOS_PESSOAIS("Expõe uma pessoa (nome, endereço, telefone, foto)"),
-    PROPAGANDA("Propaganda, venda ou pedido de voto"),
-    SPAM("Repetida, sem sentido ou de outro bairro"),
-    FALSO("Informação falsa ou golpe"),
+    FALSO("O lugar não existe ou não é o que diz"),
+    NAO_RESPEITA("Não respeita as reservas"),
+    GOLPE("Pede pagamento antecipado, Pix ou dados"),
+    IMPROPRIO("Nome, descrição ou serviço impróprio"),
     OUTRO("Outro motivo"),
 }
 
-/** Resumo das listas. [autor] é só o primeiro nome. */
 @Serializable
-data class IniciativaResumo(
+data class EstabelecimentoRequest(
+    val nome: String,
+    val tipo: Tipo,
+    val descricao: String? = null,
+    val endereco: String,
+    val bairro: String,
+    val cidade: String,
+    val uf: String,
+    val telefone: String,
+)
+
+/** Para o dono, com a situação da análise. */
+@Serializable
+data class Estabelecimento(
     val id: String,
-    val bairroId: String,
-    val titulo: String,
-    val categoria: Categoria,
-    val fase: Fase,
-    val autor: String,
-    val apoios: Long = 0,
+    val nome: String,
+    val tipo: Tipo,
+    val descricao: String? = null,
+    val endereco: String,
+    val bairro: String,
+    val cidade: String,
+    val uf: String,
+    val telefone: String,
+    val status: StatusEstabelecimento,
+    val motivoRecusa: String? = null,
     val criadoEm: String,
-    val atualizadoEm: String,
-    val apoiei: Boolean = false,
-    val minha: Boolean = false,
-    val oculta: Boolean = false,
 )
 
 @Serializable
-data class Atualizacao(val id: String, val texto: String, val fase: Fase? = null, val criadoEm: String)
+data class EstabelecimentoPublico(
+    val id: String,
+    val nome: String,
+    val tipo: Tipo,
+    val descricao: String? = null,
+    val endereco: String,
+    val bairro: String,
+    val cidade: String,
+    val uf: String,
+    val telefone: String,
+    val horariosLivres: Long = 0,
+)
 
 @Serializable
-data class Iniciativa(
-    val id: String,
-    val bairro: Bairro,
-    val titulo: String,
-    val descricao: String,
-    val categoria: Categoria,
-    val fase: Fase,
-    val autor: String,
-    val apoios: Long = 0,
-    val criadoEm: String,
-    val atualizadoEm: String,
-    val atualizacoes: List<Atualizacao> = emptyList(),
-    val apoiei: Boolean = false,
+data class EstabelecimentoResumo(val id: String, val nome: String, val tipo: Tipo, val bairro: String, val cidade: String, val uf: String)
+
+@Serializable
+data class HorarioLivre(val id: String, val inicio: String, val duracaoMin: Int, val servico: String, val precoCentavos: Int? = null)
+
+@Serializable
+data class EstabelecimentoDetalhe(
+    val estabelecimento: EstabelecimentoPublico,
+    val horarios: List<HorarioLivre> = emptyList(),
     val denunciei: Boolean = false,
-    val minha: Boolean = false,
-    val oculta: Boolean = false,
+    val meu: Boolean = false,
 )
 
 @Serializable
-data class IniciativaRequest(val titulo: String, val descricao: String, val categoria: Categoria)
+data class HorarioPublico(
+    val id: String,
+    val inicio: String,
+    val duracaoMin: Int,
+    val servico: String,
+    val precoCentavos: Int? = null,
+    val estabelecimento: EstabelecimentoResumo,
+)
 
 @Serializable
-data class AtualizacaoRequest(val texto: String, val fase: Fase? = null)
+data class ReservaParaDono(
+    val id: String,
+    val cliente: String,
+    val telefone: String? = null,
+    val observacao: String? = null,
+    val status: StatusReserva,
+)
+
+@Serializable
+data class HorarioDono(
+    val id: String,
+    val inicio: String,
+    val duracaoMin: Int,
+    val servico: String,
+    val precoCentavos: Int? = null,
+    val status: StatusHorario,
+    val reserva: ReservaParaDono? = null,
+)
+
+@Serializable
+data class EstabelecimentoDaReserva(
+    val id: String,
+    val nome: String,
+    val endereco: String,
+    val bairro: String,
+    val cidade: String,
+    val uf: String,
+    val telefone: String,
+)
+
+@Serializable
+data class ReservaCliente(
+    val id: String,
+    val status: StatusReserva,
+    val criadoEm: String,
+    val inicio: String,
+    val duracaoMin: Int,
+    val servico: String,
+    val precoCentavos: Int? = null,
+    val telefone: String? = null,
+    val observacao: String? = null,
+    val estabelecimento: EstabelecimentoDaReserva,
+)
+
+@Serializable
+data class HorariosRequest(val servico: String, val duracaoMin: Int, val precoCentavos: Int? = null, val inicios: List<String>)
+
+@Serializable
+data class ReservaRequest(val telefone: String? = null, val observacao: String? = null)
+
+@Serializable
+data class StatusReservaRequest(val status: StatusReserva)
 
 @Serializable
 data class DenunciaRequest(val motivo: MotivoDenuncia)
 
-/** Fila de moderação: o texto, o primeiro nome do autor e quantas denúncias de cada motivo. */
 @Serializable
-data class ParaRevisar(
+data class RecusaRequest(val motivo: String)
+
+/** Fila de análise: dados do negócio, o primeiro nome do dono e quantas denúncias de cada motivo. */
+@Serializable
+data class ParaAnalisar(
     val id: String,
-    val titulo: String,
-    val descricao: String,
-    val categoria: Categoria,
+    val nome: String,
+    val tipo: Tipo,
+    val descricao: String? = null,
+    val endereco: String,
     val bairro: String,
-    val autor: String,
+    val cidade: String,
+    val uf: String,
+    val telefone: String,
+    val dono: String,
     val criadoEm: String,
-    val ocultaEm: String? = null,
+    val atualizadoEm: String,
     val denuncias: Map<MotivoDenuncia, Long> = emptyMap(),
 )
 
@@ -189,15 +256,14 @@ data class ContasAdmin(
 
 @Serializable
 data class UsoAdmin(
-    val bairros: Long,
-    val bairrosComIniciativas: Long,
-    val iniciativas: Long,
-    val ativas: Long,
-    val resolvidas: Long,
-    val iniciativas30Dias: Long,
-    val apoios: Long,
-    val apoios30Dias: Long,
-    val ocultas: Long,
+    val aprovados: Long,
+    val emAnalise: Long,
+    val horariosLivres: Long,
+    val reservas30Dias: Long,
+    val reservasFuturas: Long,
+    val atendidas: Long,
+    val naoCompareceu: Long,
+    val canceladas30Dias: Long,
 )
 
 @Serializable

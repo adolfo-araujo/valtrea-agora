@@ -116,7 +116,7 @@ fun EntrarScreen() {
         LogoValtrea()
         Text(
             when (modo) {
-                Modo.ENTRAR -> "A voz organizada do seu bairro"
+                Modo.ENTRAR -> "Horários vagos perto de você"
                 Modo.CRIAR -> "Crie sua conta no Valtrea Agora"
                 Modo.ESQUECI -> "Vamos enviar um código para o seu e-mail"
                 Modo.REDEFINIR -> "Digite o código e escolha uma senha nova"

@@ -1,4 +1,4 @@
-package br.com.valtrea.agora.ui.bairro
+package br.com.valtrea.agora.ui.horarios
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +40,7 @@ internal fun AvisoConfirmarEmail(aoConfirmar: () -> Unit) {
         Icon(Icons.Default.MarkEmailUnread, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
         Spacer(Modifier.width(12.dp))
         Text(
-            "Confirme seu e-mail para publicar e apoiar iniciativas.",
+            "Confirme seu e-mail para reservar horários.",
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             style = MaterialTheme.typography.bodyMedium,
         )

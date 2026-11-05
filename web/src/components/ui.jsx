@@ -1,6 +1,6 @@
 import { useId, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { FileText, Home, LogOut, User } from 'lucide-react'
+import { CalendarCheck, Clock, LogOut, Store, User } from 'lucide-react'
 import { useAuth } from '../lib/auth'
 import { LEGAL } from '../lib/legal'
 
@@ -20,10 +20,11 @@ export function Logo({ className = '' }) {
     <span className={`flex items-center gap-2.5 ${className}`}>
       <svg viewBox="0 0 32 32" className="h-8 w-8" aria-hidden="true">
         <rect width="32" height="32" rx="8" fill="#55B02E" />
-        <path d="M5 17H11L13.5 10L18 23L20.5 17H27" stroke="#fff" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="16" cy="16" r="9" stroke="#fff" strokeWidth="2.6" fill="none" />
+        <path d="M16 11V16.5L19.5 18.5" stroke="#fff" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <span className="text-lg font-extrabold tracking-tight">
-        Valtrea <span className="text-primary">Pulso</span>
+        Valtrea <span className="text-primary">Agora</span>
       </span>
     </span>
   )
@@ -121,18 +122,22 @@ export function Pagina({ titulo, children, largura = 'max-w-5xl' }) {
       </a>
       <header className="no-print border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-2 px-4">
-          <Link to={perfil ? '/painel' : '/'} aria-label="Valtrea Agora, início">
+          <Link to="/" aria-label="Valtrea Agora, início">
             <Logo />
           </Link>
           {perfil ? (
             <nav aria-label="Principal" className="flex items-center gap-1">
-              <NavLink to={perfil.bairro ? `/b/${perfil.bairro.id}` : '/bairro'} className={item}>
-                <Home className="h-4 w-4" aria-hidden="true" /> <span className="hidden sm:inline">Meu bairro</span>
-                <span className="sr-only sm:hidden">Meu bairro</span>
+              <NavLink to="/" end className={item}>
+                <Clock className="h-4 w-4" aria-hidden="true" /> <span className="hidden sm:inline">Horários</span>
+                <span className="sr-only sm:hidden">Horários</span>
               </NavLink>
-              <NavLink to="/minhas" className={item}>
-                <FileText className="h-4 w-4" aria-hidden="true" /> <span className="hidden sm:inline">Minhas</span>
-                <span className="sr-only sm:hidden">Minhas iniciativas</span>
+              <NavLink to="/reservas" className={item}>
+                <CalendarCheck className="h-4 w-4" aria-hidden="true" /> <span className="hidden sm:inline">Reservas</span>
+                <span className="sr-only sm:hidden">Minhas reservas</span>
+              </NavLink>
+              <NavLink to="/negocio" className={item}>
+                <Store className="h-4 w-4" aria-hidden="true" /> <span className="hidden sm:inline">Meu negócio</span>
+                <span className="sr-only sm:hidden">Meu negócio</span>
               </NavLink>
               <NavLink to="/conta" className={item}>
                 <User className="h-4 w-4" aria-hidden="true" /> <span className="hidden sm:inline">Conta</span>

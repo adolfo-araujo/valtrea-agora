@@ -42,7 +42,7 @@ interface ValtreaApi {
     @POST("api/v1/eu/termos")
     suspend fun aceitarTermos(@Body pedido: AceitarTermosRequest): Perfil
 
-    /** "Baixar meus dados": arquivo JSON com cadastro, bairro, iniciativas, apoios e denúncias (LGPD). */
+    /** "Baixar meus dados": arquivo JSON com cadastro, reservas, estabelecimentos e denúncias (LGPD). */
     @GET("api/v1/eu/dados")
     suspend fun meusDados(): okhttp3.ResponseBody
 
@@ -52,55 +52,54 @@ interface ValtreaApi {
     @GET("api/v1/admin/metricas")
     suspend fun metricasAdmin(): MetricasAdmin
 
-    @GET("api/v1/admin/moderacao")
-    suspend fun moderacao(): List<ParaRevisar>
+    @GET("api/v1/admin/estabelecimentos")
+    suspend fun filaAnalise(): List<ParaAnalisar>
 
-    @POST("api/v1/admin/moderacao/{id}/manter")
-    suspend fun manter(@Path("id") id: String)
+    @POST("api/v1/admin/estabelecimentos/{id}/aprovar")
+    suspend fun aprovar(@Path("id") id: String)
 
-    @DELETE("api/v1/admin/moderacao/{id}")
-    suspend fun remover(@Path("id") id: String)
+    @POST("api/v1/admin/estabelecimentos/{id}/recusar")
+    suspend fun recusar(@Path("id") id: String, @Body pedido: RecusaRequest)
 
-    @GET("api/v1/publico/bairros")
-    suspend fun buscarBairros(@Query("uf") uf: String?, @Query("busca") busca: String?): List<Bairro>
+    @GET("api/v1/publico/horarios")
+    suspend fun horariosLivres(@Query("uf") uf: String?, @Query("tipo") tipo: Tipo?, @Query("busca") busca: String?): List<HorarioPublico>
 
-    @POST("api/v1/bairros")
-    suspend fun encontrarOuCriarBairro(@Body pedido: BairroRequest): Bairro
+    @GET("api/v1/estabelecimentos/{id}")
+    suspend fun estabelecimento(@Path("id") id: String): EstabelecimentoDetalhe
 
-    @PUT("api/v1/eu/bairro")
-    suspend fun mudarBairro(@Body pedido: MudarBairroRequest): Perfil
-
-    @GET("api/v1/bairros/{id}/iniciativas")
-    suspend fun iniciativasDoBairro(
-        @Path("id") bairroId: String,
-        @Query("fase") fase: Fase?,
-        @Query("ordem") ordem: String?,
-    ): List<IniciativaResumo>
-
-    @GET("api/v1/eu/iniciativas")
-    suspend fun minhas(): List<IniciativaResumo>
-
-    @GET("api/v1/iniciativas/{id}")
-    suspend fun iniciativa(@Path("id") id: String): Iniciativa
-
-    @POST("api/v1/iniciativas")
-    suspend fun publicar(@Body pedido: IniciativaRequest): Iniciativa
-
-    @PUT("api/v1/iniciativas/{id}")
-    suspend fun editar(@Path("id") id: String, @Body pedido: IniciativaRequest): Iniciativa
-
-    @DELETE("api/v1/iniciativas/{id}")
-    suspend fun apagar(@Path("id") id: String)
-
-    @POST("api/v1/iniciativas/{id}/atualizacoes")
-    suspend fun atualizar(@Path("id") id: String, @Body pedido: AtualizacaoRequest): Iniciativa
-
-    @POST("api/v1/iniciativas/{id}/apoio")
-    suspend fun apoiar(@Path("id") id: String): Iniciativa
-
-    @DELETE("api/v1/iniciativas/{id}/apoio")
-    suspend fun retirarApoio(@Path("id") id: String): Iniciativa
-
-    @POST("api/v1/iniciativas/{id}/denuncia")
+    @POST("api/v1/estabelecimentos/{id}/denuncia")
     suspend fun denunciar(@Path("id") id: String, @Body pedido: DenunciaRequest)
+
+    @POST("api/v1/horarios/{id}/reserva")
+    suspend fun reservar(@Path("id") id: String, @Body pedido: ReservaRequest): ReservaCliente
+
+    @GET("api/v1/eu/reservas")
+    suspend fun minhasReservas(): List<ReservaCliente>
+
+    @POST("api/v1/reservas/{id}/cancelar")
+    suspend fun cancelarReserva(@Path("id") id: String)
+
+    @POST("api/v1/reservas/{id}/status")
+    suspend fun marcarReserva(@Path("id") id: String, @Body pedido: StatusReservaRequest)
+
+    @GET("api/v1/eu/estabelecimentos")
+    suspend fun meusEstabelecimentos(): List<Estabelecimento>
+
+    @POST("api/v1/estabelecimentos")
+    suspend fun criarEstabelecimento(@Body pedido: EstabelecimentoRequest): Estabelecimento
+
+    @PUT("api/v1/estabelecimentos/{id}")
+    suspend fun editarEstabelecimento(@Path("id") id: String, @Body pedido: EstabelecimentoRequest): Estabelecimento
+
+    @DELETE("api/v1/estabelecimentos/{id}")
+    suspend fun apagarEstabelecimento(@Path("id") id: String)
+
+    @GET("api/v1/estabelecimentos/{id}/agenda")
+    suspend fun agenda(@Path("id") id: String): List<HorarioDono>
+
+    @POST("api/v1/estabelecimentos/{id}/horarios")
+    suspend fun publicarHorarios(@Path("id") id: String, @Body pedido: HorariosRequest): List<HorarioDono>
+
+    @DELETE("api/v1/horarios/{id}")
+    suspend fun apagarHorario(@Path("id") id: String)
 }

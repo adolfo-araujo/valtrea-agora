@@ -31,8 +31,8 @@ class PainelAdminTest {
         geradoEm = "2026-11-04T12:30:00Z",
         contas = ContasAdmin(total = 12, confirmadas = 9, novas7Dias = 3, novas30Dias = 7, comSessaoAtiva = 8),
         uso = UsoAdmin(
-            bairros = 5, bairrosComIniciativas = 3, iniciativas = 20, ativas = 15, resolvidas = 4,
-            iniciativas30Dias = 9, apoios = 40, apoios30Dias = 22, ocultas = 1,
+            aprovados = 5, emAnalise = 1, horariosLivres = 40, reservas30Dias = 22, reservasFuturas = 6,
+            atendidas = 15, naoCompareceu = 2, canceladas30Dias = 3,
         ),
         cadastrosPorSemana = listOf(
             "2026-09-14", "2026-09-21", "2026-09-28", "2026-10-05",
@@ -52,8 +52,8 @@ class PainelAdminTest {
         }
         compose.onNodeWithText("Administração").assertIsDisplayed()
         compose.onNodeWithContentDescription("Total: 12").assertIsDisplayed()
-        compose.onNodeWithContentDescription("Apoios em 30 dias: 22").assertIsDisplayed()
-        compose.onNodeWithContentDescription("Esperando revisão: 1").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Reservas em 30 dias: 22").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Esperando análise: 1").assertIsDisplayed()
         compose.onNodeWithContentDescription("Cadastros por semana", substring = true).assertIsDisplayed()
 
         val titulos = compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))

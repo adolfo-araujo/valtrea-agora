@@ -1,5 +1,4 @@
 User-agent: *
-Disallow: /minhas
+Disallow: /reservas
+Disallow: /negocio
 Disallow: /conta
-Disallow: /bairro
-Disallow: /nova

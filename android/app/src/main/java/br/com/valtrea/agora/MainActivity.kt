@@ -8,9 +8,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -36,17 +37,19 @@ import br.com.valtrea.agora.ui.admin.AdminScreen
 import br.com.valtrea.agora.ui.confirmar.ConfirmarEmailScreen
 import br.com.valtrea.agora.ui.conta.ContaScreen
 import br.com.valtrea.agora.ui.entrar.EntrarScreen
-import br.com.valtrea.agora.ui.bairro.BairroScreen
-import br.com.valtrea.agora.ui.bairro.EscolherBairroScreen
-import br.com.valtrea.agora.ui.iniciativa.IniciativaScreen
-import br.com.valtrea.agora.ui.iniciativa.MinhasScreen
+import br.com.valtrea.agora.ui.horarios.EstabelecimentoScreen
+import br.com.valtrea.agora.ui.horarios.HorariosScreen
+import br.com.valtrea.agora.ui.negocio.AgendaScreen
+import br.com.valtrea.agora.ui.negocio.NegocioScreen
+import br.com.valtrea.agora.ui.reservas.ReservasScreen
 import br.com.valtrea.agora.ui.theme.ValtreaTheme
 import kotlinx.serialization.Serializable
 
-@Serializable data object RotaBairro
-@Serializable data object RotaEscolherBairro
-@Serializable data class RotaIniciativa(val id: String)
-@Serializable data object RotaMinhas
+@Serializable data object RotaHorarios
+@Serializable data class RotaEstabelecimento(val id: String)
+@Serializable data object RotaReservas
+@Serializable data object RotaNegocio
+@Serializable data class RotaAgenda(val id: String)
 @Serializable data object RotaConta
 @Serializable data object RotaConfirmarEmail
 @Serializable data object RotaAdmin
@@ -54,8 +57,9 @@ import kotlinx.serialization.Serializable
 private data class Aba(val rota: Any, val rotulo: String, val icone: ImageVector)
 
 private val abas = listOf(
-    Aba(RotaBairro, "Meu bairro", Icons.Default.Home),
-    Aba(RotaMinhas, "Minhas", Icons.Default.Description),
+    Aba(RotaHorarios, "Horários", Icons.Default.AccessTime),
+    Aba(RotaReservas, "Reservas", Icons.Default.EventAvailable),
+    Aba(RotaNegocio, "Negócio", Icons.Default.Storefront),
     Aba(RotaConta, "Conta", Icons.Default.Person),
 )
 
@@ -125,23 +129,23 @@ private fun AppLogado() {
             }
         },
     ) { padding ->
-        NavHost(nav, startDestination = RotaBairro) {
-            composable<RotaBairro> {
-                BairroScreen(
-                    aoAbrir = { id -> nav.navigate(RotaIniciativa(id)) },
-                    aoEscolherBairro = { nav.navigate(RotaEscolherBairro) },
+        NavHost(nav, startDestination = RotaHorarios) {
+            composable<RotaHorarios> {
+                HorariosScreen(
+                    aoAbrir = { id -> nav.navigate(RotaEstabelecimento(id)) },
                     aoConfirmarEmail = { nav.navigate(RotaConfirmarEmail) },
                     contentPadding = padding,
                 )
             }
-            composable<RotaEscolherBairro> {
-                EscolherBairroScreen(aoConcluir = { voltar() }, aoVoltar = { voltar() }, contentPadding = padding)
+            composable<RotaEstabelecimento> { entrada ->
+                EstabelecimentoScreen(entrada.toRoute<RotaEstabelecimento>().id, aoVoltar = { voltar() }, contentPadding = padding)
             }
-            composable<RotaIniciativa> { entrada ->
-                IniciativaScreen(entrada.toRoute<RotaIniciativa>().id, aoVoltar = { voltar() }, contentPadding = padding)
+            composable<RotaReservas> { ReservasScreen(contentPadding = padding) }
+            composable<RotaNegocio> {
+                NegocioScreen(aoAbrir = { id -> nav.navigate(RotaAgenda(id)) }, contentPadding = padding)
             }
-            composable<RotaMinhas> {
-                MinhasScreen(aoAbrir = { id -> nav.navigate(RotaIniciativa(id)) }, contentPadding = padding)
+            composable<RotaAgenda> { entrada ->
+                AgendaScreen(entrada.toRoute<RotaAgenda>().id, aoVoltar = { voltar() }, contentPadding = padding)
             }
             composable<RotaConta> {
                 ContaScreen(contentPadding = padding, aoAbrirAdmin = { nav.navigate(RotaAdmin) })

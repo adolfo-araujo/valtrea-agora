@@ -88,37 +88,71 @@ export async function chamar(metodo, rota, corpo, { autenticar = true, tentativa
 export const estaLogado = () => Boolean(memoria?.refreshToken)
 export const tokenDeSessao = () => memoria?.refreshToken
 
-export const CATEGORIAS = {
-  ILUMINACAO: 'Iluminação',
-  LIMPEZA: 'Limpeza e lixo',
-  SEGURANCA: 'Segurança',
-  TRANSITO: 'Trânsito',
-  CALCADAS_E_RUAS: 'Calçadas e ruas',
-  AREAS_VERDES: 'Praças e áreas verdes',
-  SAUDE: 'Saúde',
-  EDUCACAO: 'Educação',
-  LAZER: 'Esporte e lazer',
-  TRANSPORTE: 'Transporte público',
-  OUTROS: 'Outros',
+export const TIPOS = {
+  SALAO: 'Salão de beleza',
+  BARBEARIA: 'Barbearia',
+  MANICURE: 'Manicure e pedicure',
+  ESTETICA: 'Estética',
+  SOBRANCELHA: 'Sobrancelha e cílios',
+  MASSAGEM: 'Massagem',
+  PET: 'Banho e tosa (pet)',
+  OUTRO: 'Outro serviço',
 }
 
-export const FASES = {
-  ABERTA: 'Aberta',
-  EM_ANDAMENTO: 'Em andamento',
-  RESOLVIDA: 'Resolvida',
-  ARQUIVADA: 'Arquivada',
+export const STATUS_RESERVA = {
+  CONFIRMADA: 'Confirmada',
+  CANCELADA_CLIENTE: 'Cancelada por você',
+  CANCELADA_ESTABELECIMENTO: 'Cancelada pelo estabelecimento',
+  ATENDIDA: 'Atendida',
+  NAO_COMPARECEU: 'Não compareceu',
+}
+
+export const STATUS_ESTABELECIMENTO = {
+  EM_ANALISE: 'Em análise',
+  APROVADO: 'Aprovado: aparece na busca',
+  RECUSADO: 'Precisa de ajuste',
 }
 
 export const MOTIVOS = {
-  OFENSIVO: 'Xingamento, ataque ou preconceito',
-  DADOS_PESSOAIS: 'Expõe uma pessoa (nome, endereço, telefone, foto)',
-  PROPAGANDA: 'Propaganda, venda ou pedido de voto',
-  SPAM: 'Repetida, sem sentido ou de outro bairro',
-  FALSO: 'Informação falsa ou golpe',
+  FALSO: 'O lugar não existe ou não é o que diz',
+  NAO_RESPEITA: 'Não respeita as reservas',
+  GOLPE: 'Pede pagamento antecipado, Pix ou dados',
+  IMPROPRIO: 'Nome, descrição ou serviço impróprio',
   OUTRO: 'Outro motivo',
 }
 
 export const UFS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE',
   'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 
+const dia = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })
+const hora = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' })
+const chaveDia = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+
+export const horaDe = (iso) => hora.format(new Date(iso))
 export const dataCurta = (iso) => new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })
+
+/** "Hoje", "Amanhã" ou "quinta-feira, 12 de novembro". */
+export function nomeDoDia(iso) {
+  const d = new Date(iso)
+  const hoje = new Date()
+  const amanha = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 1)
+  if (chaveDia(d) === chaveDia(hoje)) return 'Hoje'
+  if (chaveDia(d) === chaveDia(amanha)) return 'Amanhã'
+  return dia.format(d)
+}
+
+export const quando = (iso) => `${nomeDoDia(iso)}, ${horaDe(iso)}`
+
+/** Agrupa uma lista ordenada por {@code inicio} em [[nomeDoDia, itens], ...]. */
+export function porDia(lista) {
+  const grupos = []
+  for (const item of lista) {
+    const nome = nomeDoDia(item.inicio)
+    if (grupos.length === 0 || grupos[grupos.length - 1][0] !== nome) grupos.push([nome, []])
+    grupos[grupos.length - 1][1].push(item)
+  }
+  return grupos
+}
+
+export const preco = (centavos) =>
+  centavos == null ? null : (centavos / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
