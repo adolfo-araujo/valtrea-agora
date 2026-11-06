@@ -61,8 +61,9 @@ test('fluxo completo: o negócio é aprovado, publica um horário, o cliente res
   const sufixo = `${testInfo.project.name}-${Date.now()}`
   const cidade = `Cidade Ensaio ${sufixo}`
   const nome = `Barbearia Ensaio ${sufixo}`
-  const amanha = new Date(Date.now() + 24 * 3600 * 1000)
-  const dia = `${amanha.getFullYear()}-${String(amanha.getMonth() + 1).padStart(2, '0')}-${String(amanha.getDate()).padStart(2, '0')}`
+  // "Amanhã" no fuso do navegador do teste (São Paulo), não no do servidor de CI (UTC):
+  // entre 21h e meia-noite de Brasília os dois fusos já estão em dias diferentes.
+  const dia = new Date(Date.now() + 24 * 3600 * 1000).toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
 
   // O dono cria a conta e cadastra o estabelecimento
   await criarConta(page, 'Beto Dono', `beto-${sufixo}@test.dev`)

@@ -31,15 +31,15 @@ export function InicioPage() {
       )}
       <section aria-labelledby="horarios-vagos" className={perfil ? '' : estilos.cartao}>
         {perfil ? (
-          <h1 id="horarios-vagos" className="mb-6 text-2xl font-extrabold tracking-tight sm:text-3xl">Horários vagos</h1>
+          <h1 id="horarios-vagos" className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">Horários vagos</h1>
         ) : (
-          <h2 id="horarios-vagos" className="mb-4 text-xl font-extrabold">Horários vagos agora</h2>
+          <h2 id="horarios-vagos" className="mb-4 text-xl font-bold">Horários vagos agora</h2>
         )}
         <BuscaHorarios />
       </section>
       {!perfil && (
         <section aria-labelledby="como-funciona" className="mt-10 border-t border-border py-10">
-          <h2 id="como-funciona" className="text-2xl font-extrabold">Como funciona</h2>
+          <h2 id="como-funciona" className="text-2xl font-bold">Como funciona</h2>
           <ol className="mt-8 grid gap-6 sm:grid-cols-3">
             {PASSOS.map(({ icone: Icone, titulo, texto }) => (
               <li key={titulo} className={estilos.cartao}>

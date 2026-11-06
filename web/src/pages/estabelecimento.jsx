@@ -31,7 +31,7 @@ function Denunciar({ id, aoDenunciar }) {
         <p className="mb-2 text-sm text-muted">Com 3 denúncias, o estabelecimento sai da busca até a nossa revisão. Ninguém fica sabendo que foi você.</p>
         {Object.entries(MOTIVOS).map(([valor, rotulo]) => (
           <label key={valor} className="flex min-h-10 items-center gap-2.5 text-sm">
-            <input type="radio" name={nome} value={valor} checked={motivo === valor} onChange={() => setMotivo(valor)} className="h-4 w-4 accent-[#55B02E]" />
+            <input type="radio" name={nome} value={valor} checked={motivo === valor} onChange={() => setMotivo(valor)} className="h-4 w-4 accent-[#22C55E]" />
             {rotulo}
           </label>
         ))}
@@ -99,7 +99,7 @@ export function EstabelecimentoPage() {
   return (
     <Pagina largura="max-w-3xl">
       <p className="text-sm font-semibold text-primary">{TIPOS[e.tipo]}</p>
-      <h1 className="mt-1 text-3xl font-extrabold tracking-tight">{e.nome}</h1>
+      <h1 className="mt-1 text-3xl font-bold tracking-tight">{e.nome}</h1>
       {e.descricao && <p className="mt-3 whitespace-pre-line text-muted">{e.descricao}</p>}
       <p className="mt-4 flex items-start gap-2 text-sm"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
         {e.endereco} · {e.bairro}, {e.cidade} - {e.uf}</p>
@@ -117,7 +117,7 @@ export function EstabelecimentoPage() {
                 <li key={h.id} id={`h-${h.id}`} className="rounded-xl border border-border p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-lg font-extrabold tabular-nums">{horaDe(h.inicio)}</p>
+                      <p className="text-lg font-bold tabular-nums">{horaDe(h.inicio)}</p>
                       <Detalhes h={h} />
                     </div>
                     {!dados.meu && escolhido?.id !== h.id && (
