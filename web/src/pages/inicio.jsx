@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CalendarCheck, Search, ShieldCheck, Store } from 'lucide-react'
 import { useAuth } from '../lib/auth'
-import { Pagina, estilos } from '../components/ui'
+import { Pagina, estilos, ComoInstalarNoIphone } from '../components/ui'
 import { BuscaHorarios } from './horarios'
 
 const PASSOS = [
@@ -27,7 +27,8 @@ export function InicioPage() {
             <Link to="/cadastro" className={estilos.primario}>Criar conta grátis</Link>
             <Link to="/entrar" className={estilos.secundario}>Já tenho conta</Link>
           </div>
-        </section>
+          <ComoInstalarNoIphone />
+      </section>
       )}
       <section aria-labelledby="horarios-vagos" className={perfil ? '' : estilos.cartao}>
         {perfil ? (
