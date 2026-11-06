@@ -1,5 +1,10 @@
 # Play Console: respostas dos formulários
 
+## Acesso ao app (Política → Conteúdo do app → Acesso ao app)
+
+- **Todas ou algumas funcionalidades são restritas:** sim, é preciso entrar com uma conta.
+- **Instruções para a revisão do Google:** Cadastre duas contas no app (cliente e negócio), confirme os e-mails, cadastre e aprove um estabelecimento pelo painel de admin e publique alguns horários. Informe a conta de cliente; se quiser, também a de negócio. Informe no Console o e-mail e a senha dessa conta. Use uma senha só para isso.
+
 ## Segurança dos dados (Política → Conteúdo do app → Segurança dos dados)
 
 - O app coleta ou compartilha dados do usuário? **Sim**
