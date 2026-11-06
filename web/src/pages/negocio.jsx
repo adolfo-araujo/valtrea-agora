@@ -167,7 +167,7 @@ export function AgendaPage() {
   return (
     <Pagina largura="max-w-3xl">
       <Link to="/negocio" className="text-sm font-semibold text-primary hover:underline">← Meu negócio</Link>
-      <h1 className="mt-2 text-3xl font-extrabold tracking-tight">{est.nome}</h1>
+      <h1 className="mt-2 text-3xl font-bold tracking-tight">{est.nome}</h1>
       <div className="mt-2"><Situacao e={est} /></div>
       {est.status === 'APROVADO' && <p className="mt-2 text-sm"><Link to={`/e/${est.id}`} className={estilos.link}>Ver como os clientes veem</Link></p>}
       <Mensagem>{aviso}</Mensagem>
@@ -192,7 +192,7 @@ export function AgendaPage() {
                   <li key={h.id} className="rounded-xl border border-border p-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
-                        <p className="font-extrabold tabular-nums">{horaDe(h.inicio)} <span className="text-sm font-normal text-muted">
+                        <p className="font-bold tabular-nums">{horaDe(h.inicio)} <span className="text-sm font-normal text-muted">
                           {h.status === 'LIVRE' ? 'livre' : h.status === 'CANCELADO' ? 'cancelado' : 'reservado'}</span></p>
                         <Detalhes h={h} />
                       </div>

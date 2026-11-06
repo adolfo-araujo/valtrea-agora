@@ -98,7 +98,7 @@ export function BuscaHorarios() {
                     className={`${estilos.cartao} flex items-start gap-4 transition-colors hover:border-primary/60`}>
                     <span className="flex min-w-16 flex-col items-center rounded-lg bg-surface-2 px-2 py-1.5">
                       <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
-                      <span className="text-lg font-extrabold tabular-nums">{horaDe(h.inicio)}</span>
+                      <span className="text-lg font-bold tabular-nums">{horaDe(h.inicio)}</span>
                     </span>
                     <span className="flex flex-col">
                       <span className="font-bold">{h.estabelecimento.nome}</span>
