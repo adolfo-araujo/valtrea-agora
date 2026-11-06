@@ -31,7 +31,7 @@ function Denunciar({ id, aoDenunciar }) {
         <p className="mb-2 text-sm text-muted">Com 3 denúncias, o estabelecimento sai da busca até a nossa revisão. Ninguém fica sabendo que foi você.</p>
         {Object.entries(MOTIVOS).map(([valor, rotulo]) => (
           <label key={valor} className="flex min-h-10 items-center gap-2.5 text-sm">
-            <input type="radio" name={nome} value={valor} checked={motivo === valor} onChange={() => setMotivo(valor)} className="h-4 w-4 accent-[#22C55E]" />
+            <input type="radio" name={nome} value={valor} checked={motivo === valor} onChange={() => setMotivo(valor)} className="h-4 w-4 accent-[#55B02E]" />
             {rotulo}
           </label>
         ))}
