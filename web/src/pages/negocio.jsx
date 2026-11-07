@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { STATUS_ESTABELECIMENTO, STATUS_RESERVA, TIPOS, UFS, chamar, horaDe, porDia } from '../lib/api'
 import { useAuth } from '../lib/auth'
-import { Campo, Mensagem, Pagina, estilos, useEnvio } from '../components/ui'
+import { Campo, Mensagem, Pagina, PrimeirosPassos, estilos, useEnvio } from '../components/ui'
 import { Detalhes, Selecao, opcoesTipo } from './horarios'
 import { Divulgar } from './divulgar'
 import { PublicarSemana } from './semana'
@@ -63,6 +63,14 @@ export function NegocioPage() {
       <p className="mb-6 text-muted">Cadastre o seu salão, barbearia ou outro serviço e publique os horários que ficaram vagos.
         Todo cadastro passa por análise antes de aparecer na busca.</p>
       {!perfil?.emailConfirmado && <Mensagem>Confirme seu e-mail antes. <Link to="/confirmar-email" className={estilos.link}>Confirmar agora</Link></Mensagem>}
+      {lista?.length === 0 && (
+        <PrimeirosPassos passos={[
+          { feito: Boolean(perfil?.emailConfirmado), titulo: 'Confirme seu e-mail', para: '/confirmar-email', rotulo: 'Confirmar agora' },
+          { feito: false, titulo: 'Cadastre o seu estabelecimento', texto: 'Ele passa por análise antes de aparecer na busca.' },
+          { feito: false, titulo: 'Publique os horários da semana', texto: 'De uma vez: dias, horário de abrir e fechar e intervalo.' },
+          { feito: false, titulo: 'Divulgue sua página', texto: 'Depois da aprovação: link para o Instagram e QR Code para o balcão.' },
+        ]} />
+      )}
       <Mensagem tipo="erro">{erro}</Mensagem>
       <ul className="space-y-4">
         {lista?.map((e) => (
@@ -175,6 +183,13 @@ export function AgendaPage() {
       {est.status === 'APROVADO' && <p className="mt-2 text-sm"><Link to={`/e/${est.id}`} className={estilos.link}>Ver como os clientes veem</Link></p>}
       <Mensagem>{aviso}</Mensagem>
       <Mensagem tipo="erro">{erro}</Mensagem>
+      <div className="mt-6">
+        <PrimeirosPassos passos={[
+          { feito: true, titulo: 'Cadastre o seu estabelecimento' },
+          { feito: (agenda ?? []).length > 0, titulo: 'Publique os horários da semana', texto: 'Use "Toda semana" logo abaixo: dias, horário de abrir e fechar e intervalo.' },
+          { feito: est.status === 'APROVADO', titulo: 'Aguarde a aprovação', texto: 'Analisamos o cadastro e avisamos por e-mail. Os horários aparecem na busca assim que for aprovado.' },
+        ]} />
+      </div>
 
       {est.status === 'APROVADO' && (
         <section aria-labelledby="divulgar" className={`${estilos.cartao} mt-6`}>

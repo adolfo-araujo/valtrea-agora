@@ -11,6 +11,7 @@ import { AgendaPage, NegocioPage } from './pages/negocio'
 import { ContaPage } from './pages/conta'
 import { AcessibilidadePage, ExcluirContaPage, PrivacidadePage, TermosPage } from './pages/legal'
 import { AjudaPage } from './pages/ajuda'
+import { NovidadesPage } from './pages/novidades'
 
 function Protegida({ children }) {
   const { perfil, carregando } = useAuth()
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/negocio" element={<Protegida><NegocioPage /></Protegida>} />
         <Route path="/negocio/:id" element={<Protegida><AgendaPage /></Protegida>} />
         <Route path="/conta" element={<Protegida><ContaPage /></Protegida>} />
+        <Route path="/novidades" element={<NovidadesPage />} />
         <Route path="/ajuda" element={<AjudaPage />} />
         <Route path="/termos" element={<TermosPage />} />
         <Route path="/privacidade" element={<PrivacidadePage />} />

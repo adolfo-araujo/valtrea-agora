@@ -1,4 +1,9 @@
 User-agent: *
+Allow: /
+Disallow: /confirmar-email
+Disallow: /esqueci-senha
+Disallow: /conta
 Disallow: /reservas
 Disallow: /negocio
-Disallow: /conta
+
+Sitemap: https://agora.valtrea.com.br/sitemap.xml
