@@ -5,6 +5,8 @@ import { STATUS_ESTABELECIMENTO, STATUS_RESERVA, TIPOS, UFS, chamar, horaDe, por
 import { useAuth } from '../lib/auth'
 import { Campo, Mensagem, Pagina, estilos, useEnvio } from '../components/ui'
 import { Detalhes, Selecao, opcoesTipo } from './horarios'
+import { Divulgar } from './divulgar'
+import { PublicarSemana } from './semana'
 
 const VAZIO = { nome: '', tipo: 'SALAO', descricao: '', endereco: '', bairro: '', cidade: '', uf: 'RJ', telefone: '' }
 
@@ -144,6 +146,7 @@ export function AgendaPage() {
   const [agenda, setAgenda] = useState(null)
   const [editando, setEditando] = useState(false)
   const [aviso, setAviso] = useState('')
+  const [modo, setModo] = useState('semana')
   const { enviando, erro, executar } = useEnvio()
 
   const carregar = () => executar(async () => {
@@ -173,9 +176,28 @@ export function AgendaPage() {
       <Mensagem>{aviso}</Mensagem>
       <Mensagem tipo="erro">{erro}</Mensagem>
 
+      {est.status === 'APROVADO' && (
+        <section aria-labelledby="divulgar" className={`${estilos.cartao} mt-6`}>
+          <h2 id="divulgar" className="mb-3 text-lg font-bold">Divulgue sua página</h2>
+          <Divulgar est={est} />
+        </section>
+      )}
+
       <section aria-labelledby="publicar" className={`${estilos.cartao} mt-6`}>
-        <h2 id="publicar" className="mb-4 text-lg font-bold">Publicar horários vagos</h2>
-        <PublicarHorarios id={id} aoPublicar={(a) => { setAgenda(a); setAviso('Horários publicados.') }} />
+        <h2 id="publicar" className="text-lg font-bold">Publicar horários vagos</h2>
+        <div role="group" aria-label="Como publicar" className="mb-4 mt-3 inline-flex rounded-lg border border-border bg-surface-2 p-1">
+          {[['semana', 'Toda semana'], ['dia', 'Um dia']].map(([valor, rotulo]) => (
+            <button key={valor} type="button" aria-pressed={modo === valor} onClick={() => setModo(valor)}
+              className={`h-9 rounded-md px-4 text-sm font-semibold ${modo === valor ? 'bg-background text-foreground' : 'text-muted hover:text-foreground'}`}>
+              {rotulo}
+            </button>
+          ))}
+        </div>
+        {modo === 'semana' ? (
+          <PublicarSemana id={id} agenda={agenda} aoPublicar={(a, msg) => { if (a) setAgenda(a); if (msg) setAviso(msg) }} />
+        ) : (
+          <PublicarHorarios id={id} aoPublicar={(a) => { setAgenda(a); setAviso('Horários publicados.') }} />
+        )}
       </section>
 
       <section aria-labelledby="agenda" className="mt-8">

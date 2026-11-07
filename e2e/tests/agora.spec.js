@@ -81,7 +81,8 @@ test('fluxo completo: o negócio é aprovado, publica um horário, o cliente res
   await expect(page.getByRole('heading', { name: nome })).toBeVisible()
   await expect(page.getByText('Em análise', { exact: true })).toBeVisible()
 
-  // Publica um horário para amanhã
+  // Publica um horário para amanhã (modo "Um dia"; o padrão é "Toda semana")
+  await page.getByRole('button', { name: 'Um dia' }).click()
   await page.getByLabel('Dia', { exact: true }).fill(dia)
   await page.getByLabel('Horários vagos', { exact: true }).fill('15:00')
   await page.getByLabel('Serviço', { exact: true }).fill('Corte e barba')
