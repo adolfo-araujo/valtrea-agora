@@ -12,6 +12,25 @@ import { ContaPage } from './pages/conta'
 import { AcessibilidadePage, ExcluirContaPage, PrivacidadePage, TermosPage } from './pages/legal'
 import { AjudaPage } from './pages/ajuda'
 import { NovidadesPage } from './pages/novidades'
+import { CartazPage } from './pages/divulgar'
+import { BuscaRapida } from './components/busca-rapida'
+
+// Telas da busca rápida (Ctrl+K): rótulo, endereço, palavras para achar
+const TELAS = [
+  ["Buscar horários", "/", "inicio reservar agendar"],
+  ["Minhas reservas", "/reservas", "agenda cancelar"],
+  ["Meu negócio", "/negocio", "estabelecimento agenda horarios"],
+  ["Para negócios", "/para-negocios", "salao barbearia cadastrar"],
+  ["Minha conta", "/conta", "perfil senha baixar dados excluir"],
+  ["Entrar", "/entrar", "login"],
+  ["Criar conta", "/cadastro", "cadastro"],
+  ["Central de ajuda", "/ajuda", "duvidas perguntas suporte"],
+  ["Novidades", "/novidades", "mudancas versao"],
+  ["Termos de uso", "/termos", "contrato"],
+  ["Política de privacidade", "/privacidade", "lgpd dados"],
+  ["Acessibilidade", "/acessibilidade", ""],
+  ["Excluir conta (como fazer)", "/excluir-conta", "apagar"],
+]
 
 function Protegida({ children }) {
   const { perfil, carregando } = useAuth()
@@ -23,6 +42,7 @@ function Protegida({ children }) {
 export default function App() {
   return (
     <>
+      <BuscaRapida itens={TELAS} />
       <AvisoTermos />
       <Routes>
         <Route path="/" element={<InicioPage />} />
@@ -32,6 +52,7 @@ export default function App() {
         <Route path="/confirmar-email" element={<ConfirmarEmailPage />} />
         <Route path="/para-negocios" element={<NegociosPage />} />
         <Route path="/e/:id" element={<EstabelecimentoPage />} />
+        <Route path="/e/:id/cartaz" element={<CartazPage />} />
         <Route path="/reservas" element={<Protegida><ReservasPage /></Protegida>} />
         <Route path="/negocio" element={<Protegida><NegocioPage /></Protegida>} />
         <Route path="/negocio/:id" element={<Protegida><AgendaPage /></Protegida>} />

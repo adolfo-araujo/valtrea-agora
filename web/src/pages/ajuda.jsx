@@ -33,6 +33,14 @@ const SECOES = [
     "Para quem tem um negócio",
     [
       [
+        "Tem cartaz para o balcão?",
+        "Sim. Em Meu negócio, na parte \"Divulgue sua página\", toque em \"Cartaz para imprimir\": sai uma folha A4 com o nome do negócio e o QR Code para o cliente agendar."
+      ],
+      [
+        "Dá para colocar um botão de agendar no meu site?",
+        "Sim. Em \"Divulgue sua página\", abra \"Botão de agendamento para o seu site\", copie o código e cole no seu site. Quem clicar abre a sua página no Agora."
+      ],
+      [
         "Como cadastro meu negócio?",
         "Crie a conta, vá em Meu negócio e cadastre o estabelecimento. Ele passa por análise antes de aparecer na busca. Veja todos os detalhes na página Para negócios."
       ],
@@ -49,6 +57,10 @@ const SECOES = [
   [
     "Conta e dados",
     [
+      [
+        "Tem atalho para ir mais rápido?",
+        "No computador, aperte Ctrl+K (ou Cmd+K no Mac) ou a tecla / em qualquer tela. Digite o que procura, como \"conta\" ou \"ajuda\", e aperte Enter."
+      ],
       [
         "O site demorou para abrir. É normal?",
         "Quando o serviço fica um tempo sem uso, a primeira ação pode levar até 1 minuto, porque o servidor estava em repouso. Aparece o aviso \"Acordando o servidor\" e, depois disso, fica rápido."

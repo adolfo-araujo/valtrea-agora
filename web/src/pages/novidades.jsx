@@ -3,6 +3,14 @@ import { Pagina } from '../components/ui'
 // O que mudou em cada versão. Acrescente no topo a cada novidade.
 const VERSOES = [
   [
+    "7 de novembro de 2026",
+    [
+      "Cartaz A4 para o balcão, com o nome do negócio e o QR Code para agendar.",
+      "Botão \"Agendar horário\" para colocar no site do próprio negócio.",
+      "Busca rápida: aperte Ctrl+K (ou / ) no computador para ir a qualquer tela."
+    ]
+  ],
+  [
     "6 de novembro de 2026",
     [
       "Para negócios: horários que se repetem toda semana, publicados de uma vez.",
