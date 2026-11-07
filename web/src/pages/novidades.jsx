@@ -5,6 +5,8 @@ const VERSOES = [
   [
     "7 de novembro de 2026",
     [
+      "Minhas reservas abre mesmo sem internet, com a última versão salva.",
+      "Telas de carregamento, mensagens de erro mais claras e listas vazias com o próximo passo.",
       "Cartaz A4 para o balcão, com o nome do negócio e o QR Code para agendar.",
       "Botão \"Agendar horário\" para colocar no site do próprio negócio.",
       "Busca rápida: aperte Ctrl+K (ou / ) no computador para ir a qualquer tela."

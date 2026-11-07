@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { STATUS_ESTABELECIMENTO, STATUS_RESERVA, TIPOS, UFS, chamar, horaDe, porDia } from '../lib/api'
 import { useAuth } from '../lib/auth'
-import { Campo, Mensagem, Pagina, PrimeirosPassos, estilos, useEnvio } from '../components/ui'
+import { Campo, Carregando, Mensagem, Pagina, PrimeirosPassos, Vazio, estilos, useEnvio } from '../components/ui'
 import { Detalhes, Selecao, opcoesTipo } from './horarios'
 import { Divulgar } from './divulgar'
 import { PublicarSemana } from './semana'
@@ -172,7 +172,7 @@ export function AgendaPage() {
     setAgenda(await chamar('GET', `/estabelecimentos/${id}/agenda`))
   })
 
-  if (!est) return <Pagina largura="max-w-3xl"><Mensagem tipo="erro">{erro}</Mensagem><p className="text-muted">{erro ? '' : 'Carregando…'}</p></Pagina>
+  if (!est) return <Pagina largura="max-w-3xl"><Mensagem tipo="erro">{erro}</Mensagem>{!erro && <Carregando linhas={2} />}</Pagina>
   const agora = Date.now()
 
   return (
@@ -217,7 +217,9 @@ export function AgendaPage() {
 
       <section aria-labelledby="agenda" className="mt-8">
         <h2 id="agenda" className="text-xl font-bold">Agenda</h2>
-        {agenda?.length === 0 && <p className="mt-2 text-muted">Nenhum horário publicado.</p>}
+        {agenda?.length === 0 && (
+          <div className="mt-3"><Vazio titulo="Nenhum horário publicado" texto={'Use "Toda semana", acima, para publicar os horários da semana de uma vez. Eles aparecem aqui e na sua página.'} /></div>
+        )}
         {agenda && porDia(agenda).map(([dia, itens]) => (
           <div key={dia} className="mt-5">
             <h3 className="mb-2 font-semibold capitalize">{dia}</h3>

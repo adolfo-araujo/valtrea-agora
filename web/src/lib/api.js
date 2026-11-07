@@ -26,6 +26,8 @@ export const sessao = {
     } catch {
       // nada a fazer
     }
+    // Apaga a cópia de "Minhas reservas" guardada para uso sem internet (public/sw.js)
+    if (typeof caches !== 'undefined') caches.delete('valtrea-dados').catch(() => {})
     memoria = null
   },
 }
@@ -74,6 +76,10 @@ async function mensagemDe(res) {
   const primeiroCampo = corpo.campos && Object.entries(corpo.campos)[0]
   const texto = primeiroCampo ? `${primeiroCampo[1]}` : corpo.detail || corpo.message
   if (res.status === 429) return new ErroApi(429, texto || 'Muitas tentativas. Aguarde alguns minutos.')
+  // Mensagens que dizem o que fazer, quando o servidor não explica
+  if (res.status >= 500) return new ErroApi(res.status, 'Tivemos um problema do nosso lado. Tente de novo em alguns minutos; se continuar, conte para nós em "Enviar sugestão", no rodapé.')
+  if (!texto && res.status === 404) return new ErroApi(404, 'Não encontramos o que você procurou. O link pode estar incompleto ou o item foi apagado.')
+  if (!texto && res.status === 403) return new ErroApi(403, 'Você não tem acesso a isto. Confira se entrou com a conta certa.')
   return new ErroApi(res.status, texto || 'Não foi possível concluir agora. Tente de novo em instantes.', corpo.campos)
 }
 

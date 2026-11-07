@@ -4,7 +4,7 @@ Documento interno (LGPD art. 37), no formato simplificado para agente de tratame
 
 - **Controlador:** João Adolfo Martins Araújo (pessoa física), Rio de Janeiro/RJ
 - **Encarregado / canal:** sem encarregado indicado (dispensa de pequeno porte); canal: contato@valtrea.com.br
-- **Elaborado em:** 05/11/2026 · **Revisar:** a cada 12 meses ou a cada nova funcionalidade que trate dados
+- **Elaborado em:** 05/11/2026 · **Atualizado em:** 07/11/2026 · **Revisar:** a cada 12 meses ou a cada nova funcionalidade que trate dados
 - **Serviço:** Valtrea Agora (site agora.valtrea.com.br, app Android e API valtrea-agora-api.onrender.com), em testes
 
 ## Operações
@@ -23,6 +23,7 @@ Documento interno (LGPD art. 37), no formato simplificado para agente de tratame
 | 10 | Registro de erros | Todos | Dados técnicos, rota modelo (sem ids) | Não | Corrigir falhas | Art. 7º, IX | `monitoramento/*`, `ValtreaApp.kt` | Sentry | Sim (EUA) | Até 90 dias | Sem usuário, IP, corpo, cabeçalhos |
 | 11 | Backup | Todos | Cópia do banco | Não | Recuperar dados | Art. 7º, IX | `.github/workflows/backup.yml` | GitHub | Sim (EUA) | 30 dias | AES-256, senha fora do GitHub |
 | 12 | Painel de administração | Todos (em conjunto) | Só contagens | Não | Acompanhar o uso | Art. 7º, IX | `/api/v1/admin/metricas` | Render, Neon | Sim (EUA) | Não guarda | Só administradores |
+| 13 | Cópia para uso sem internet | Clientes e donos | Perfil (nome, e-mail) e lista de reservas da própria pessoa | Não | Abrir "Minhas reservas" sem internet | Art. 7º, V | `web/public/sw.js` | Nenhum (fica no navegador da pessoa) | Não | Até sair da conta ou a sessão expirar | Só no aparelho da própria pessoa; apagada em `sessao.limpar()` |
 
 ## Direitos do titular
 
@@ -46,3 +47,10 @@ Documento interno (LGPD art. 37), no formato simplificado para agente de tratame
 - Telefone do cliente: opcional e mostrado só ao estabelecimento daquela reserva. Os Termos proíbem usá-lo para outra coisa (ex.: propaganda).
 - Golpes: o Agora não tem pagamento; a página e os Termos avisam para nunca pagar adiantado. Denúncia "Pede pagamento antecipado" leva à análise.
 - Presença ("não compareceu") é marcada pelo estabelecimento e não é usada para bloquear ninguém nesta versão.
+
+## Revisão de 07/11/2026
+
+- Nova operação 13 (cópia sem internet), já descrita na Política de privacidade (seção 6).
+- Cartaz A4 e botão de agendamento para o site do negócio: usam só dados públicos do estabelecimento aprovado (nome, tipo e endereço da página). Nenhum dado novo.
+- Busca rápida (Ctrl+K): só navega entre telas; nada é guardado nem enviado.
+- Telas de carregamento, de erro e de lista vazia: sem dados novos.

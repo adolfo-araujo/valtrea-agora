@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Flag, MapPin, Phone } from 'lucide-react'
 import { MOTIVOS, TIPOS, chamar, horaDe, porDia, quando } from '../lib/api'
 import { useAuth } from '../lib/auth'
-import { Campo, Mensagem, Pagina, estilos, useEnvio } from '../components/ui'
+import { Campo, Carregando, Mensagem, Pagina, estilos, useEnvio } from '../components/ui'
 import { Detalhes } from './horarios'
 
 function Denunciar({ id, aoDenunciar }) {
@@ -93,7 +93,7 @@ export function EstabelecimentoPage() {
       </Pagina>
     )
   }
-  if (!dados) return <Pagina largura="max-w-3xl"><p className="text-muted">Carregando…</p></Pagina>
+  if (!dados) return <Pagina largura="max-w-3xl"><Carregando /></Pagina>
   const e = dados.estabelecimento
 
   return (

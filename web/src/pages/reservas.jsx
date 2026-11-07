@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { CalendarPlus, MapPin, Phone } from 'lucide-react'
 import { STATUS_RESERVA, chamar, preco, quando } from '../lib/api'
-import { Mensagem, Pagina, estilos, useEnvio } from '../components/ui'
+import { Mensagem, Pagina, Vazio, estilos, useEnvio } from '../components/ui'
 import { baixarIcs, linkGoogleAgenda } from '../lib/calendario'
 
 export function ReservasPage() {
@@ -10,6 +10,16 @@ export function ReservasPage() {
   const [lista, setLista] = useState(null)
   const [aviso, setAviso] = useState(avisoAnterior || '')
   const { enviando, erro, executar } = useEnvio()
+  const [semInternet, setSemInternet] = useState(!navigator.onLine)
+  useEffect(() => {
+    const atualizar = () => setSemInternet(!navigator.onLine)
+    window.addEventListener('online', atualizar)
+    window.addEventListener('offline', atualizar)
+    return () => {
+      window.removeEventListener('online', atualizar)
+      window.removeEventListener('offline', atualizar)
+    }
+  }, [])
   const carregar = () => executar(async () => setLista(await chamar('GET', '/eu/reservas')))
   useEffect(() => {
     carregar()
@@ -56,9 +66,10 @@ export function ReservasPage() {
   return (
     <Pagina titulo="Minhas reservas">
       <Mensagem>{aviso}</Mensagem>
+      <Mensagem>{semInternet && lista ? 'Sem internet: esta é a última versão salva das suas reservas. Para cancelar ou ver mudanças, conecte-se de novo.' : ''}</Mensagem>
       <Mensagem tipo="erro">{erro}</Mensagem>
       {lista?.length === 0 && (
-        <p className="text-muted">Nenhuma reserva ainda. <Link to="/" className={estilos.link}>Ver horários vagos</Link></p>
+        <Vazio titulo="Nenhuma reserva ainda" texto="Procure pela sua cidade ou bairro, escolha um horário vago e reserve em segundos. As reservas aparecem aqui." acao={['Ver horários vagos', '/']} />
       )}
       {proximas.length > 0 && (
         <section aria-labelledby="proximas" className="mt-4">

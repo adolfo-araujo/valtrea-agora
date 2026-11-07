@@ -8,6 +8,10 @@ const SECOES = [
     "Para quem procura um horário",
     [
       [
+        "Consigo ver minhas reservas sem internet?",
+        "Sim, no mesmo aparelho em que você já abriu Minhas reservas com internet. Aparece a última versão salva; para cancelar ou ver mudanças, é preciso estar conectado. A cópia é apagada quando você sai da conta."
+      ],
+      [
         "Como reservo um horário?",
         "Escolha o estado, procure pela cidade, bairro ou nome, abra o estabelecimento e toque no horário. A reserva é confirmada na hora e você recebe um e-mail."
       ],
