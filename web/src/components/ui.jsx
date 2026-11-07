@@ -96,6 +96,8 @@ function Rodape() {
     <footer className="no-print mt-16 border-t border-border">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-4 py-8 text-sm text-muted sm:flex-row sm:justify-between">
         <nav aria-label="Documentos" className="flex flex-wrap justify-center gap-x-5 gap-y-1">
+          <Link to="/ajuda" className="hover:text-foreground hover:underline">Ajuda</Link>
+          <Link to="/para-negocios" className="hover:text-foreground hover:underline">Para negócios</Link>
           <Link to="/termos" className="hover:text-foreground hover:underline">Termos de uso</Link>
           <Link to="/privacidade" className="hover:text-foreground hover:underline">Privacidade</Link>
           <Link to="/acessibilidade" className="hover:text-foreground hover:underline">Acessibilidade</Link>
@@ -202,6 +204,8 @@ export function TelaAuth({ titulo, subtitulo, children, abaixo }) {
       </main>
       <footer className="pb-8">
         <nav aria-label="Documentos" className="flex flex-wrap justify-center gap-x-5 gap-y-1 px-4 text-sm text-muted">
+          <Link to="/ajuda" className="hover:text-foreground hover:underline">Ajuda</Link>
+          <Link to="/para-negocios" className="hover:text-foreground hover:underline">Para negócios</Link>
           <Link to="/termos" className="hover:text-foreground hover:underline">Termos de uso</Link>
           <Link to="/privacidade" className="hover:text-foreground hover:underline">Política de privacidade</Link>
           <Link to="/acessibilidade" className="hover:text-foreground hover:underline">Acessibilidade</Link>

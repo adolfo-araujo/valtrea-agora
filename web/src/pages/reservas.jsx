@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { MapPin, Phone } from 'lucide-react'
+import { CalendarPlus, MapPin, Phone } from 'lucide-react'
 import { STATUS_RESERVA, chamar, preco, quando } from '../lib/api'
 import { Mensagem, Pagina, estilos, useEnvio } from '../components/ui'
+import { baixarIcs, linkGoogleAgenda } from '../lib/calendario'
 
 export function ReservasPage() {
   const avisoAnterior = useLocation().state?.aviso
@@ -28,6 +29,17 @@ export function ReservasPage() {
         {r.estabelecimento.endereco} · {r.estabelecimento.bairro}, {r.estabelecimento.cidade} - {r.estabelecimento.uf}</p>
       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted"><Phone className="h-4 w-4" aria-hidden="true" />
         <a href={`tel:${r.estabelecimento.telefone.replace(/[^0-9+]/g, '')}`} className={estilos.link}>{r.estabelecimento.telefone}</a></p>
+      {podeCancelar && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button type="button" className={estilos.secundario} onClick={() => baixarIcs(r)}>
+            <CalendarPlus className="h-4 w-4" aria-hidden="true" /> Adicionar à agenda
+          </button>
+          <a className={estilos.secundario} href={linkGoogleAgenda(r)} target="_blank" rel="noreferrer">Google Agenda</a>
+        </div>
+      )}
+      {podeCancelar && (
+        <p className="mt-2 text-xs text-muted">A agenda do celular avisa 1 dia e 2 horas antes.</p>
+      )}
       {podeCancelar && (
         <button type="button" className={`${estilos.perigo} mt-4`} disabled={enviando} onClick={() => {
           if (!window.confirm('Cancelar esta reserva? O horário volta a ficar livre para outra pessoa.')) return

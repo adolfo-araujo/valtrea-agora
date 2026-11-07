@@ -55,7 +55,7 @@ function Reservar({ horario, aoCancelar }) {
       e.preventDefault()
       executar(async () => {
         await chamar('POST', `/horarios/${horario.id}/reserva`, { telefone: telefone || null, observacao: observacao || null })
-        navegar('/reservas', { state: { aviso: 'Reserva feita! O estabelecimento já foi avisado.' } })
+        navegar('/reservas', { state: { aviso: 'Reserva feita! O estabelecimento já foi avisado. Toque em "Adicionar à agenda" para o celular lembrar você.' } })
       })
     }}>
       <p className="font-semibold">Reservar {horario.servico}, {quando(horario.inicio)}</p>

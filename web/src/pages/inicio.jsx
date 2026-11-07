@@ -7,7 +7,7 @@ import { BuscaHorarios } from './horarios'
 const PASSOS = [
   { icone: Search, titulo: 'Procure perto de você', texto: 'Horários que acabaram de vagar em salões, barbearias e outros serviços da sua cidade.' },
   { icone: CalendarCheck, titulo: 'Reserve com um toque', texto: 'Sem pagar nada no app: o horário fica seu e você paga direto no local.' },
-  { icone: Store, titulo: 'Tem um negócio?', texto: 'Cadastre o seu estabelecimento e publique os horários vagos do dia para não ficar com a cadeira vazia.' },
+  { icone: Store, titulo: 'Tem um negócio?', texto: 'Cadastre o seu estabelecimento e publique os horários vagos do dia para não ficar com a cadeira vazia.', link: ['/para-negocios', 'Saiba como funciona para negócios'] },
 ]
 
 export function InicioPage() {
@@ -42,11 +42,12 @@ export function InicioPage() {
         <section aria-labelledby="como-funciona" className="mt-10 border-t border-border py-10">
           <h2 id="como-funciona" className="text-2xl font-bold">Como funciona</h2>
           <ol className="mt-8 grid gap-6 sm:grid-cols-3">
-            {PASSOS.map(({ icone: Icone, titulo, texto }) => (
+            {PASSOS.map(({ icone: Icone, titulo, texto, link }) => (
               <li key={titulo} className={estilos.cartao}>
                 <Icone className="h-6 w-6 text-primary" aria-hidden="true" />
                 <h3 className="mt-3 font-bold">{titulo}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-muted">{texto}</p>
+                {link && <Link to={link[0]} className={`${estilos.link} mt-2 inline-block text-sm`}>{link[1]} →</Link>}
               </li>
             ))}
           </ol>
