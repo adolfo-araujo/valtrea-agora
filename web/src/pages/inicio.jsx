@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CalendarCheck, Search, ShieldCheck, Store } from 'lucide-react'
 import { useAuth } from '../lib/auth'
-import { Pagina, estilos, ComoInstalarNoIphone, Abertura } from '../components/ui'
+import { Pagina, estilos, ComoInstalarNoIphone, Abertura, IconeVidro } from '../components/ui'
 import { BuscaHorarios } from './horarios'
 
 const PASSOS = [
@@ -28,7 +28,7 @@ export function InicioPage() {
         {perfil ? (
           <h1 id="horarios-vagos" className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">Horários vagos</h1>
         ) : (
-          <h2 id="horarios-vagos" className="mb-4 text-xl font-bold">Horários vagos agora</h2>
+          <h2 id="horarios-vagos" className="mb-4 text-2xl font-extrabold">Horários vagos agora</h2>
         )}
         <BuscaHorarios />
       </section>
@@ -38,8 +38,8 @@ export function InicioPage() {
           <ol className="mt-8 grid gap-6 sm:grid-cols-3">
             {PASSOS.map(({ icone: Icone, titulo, texto, link }) => (
               <li key={titulo} className={estilos.cartao}>
-                <Icone className="h-6 w-6 text-primary" aria-hidden="true" />
-                <h3 className="mt-3 font-bold">{titulo}</h3>
+                <IconeVidro icone={Icone} />
+                <h3 className="mt-4 text-lg font-extrabold">{titulo}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-muted">{texto}</p>
                 {link && <Link to={link[0]} className={`${estilos.link} mt-2 inline-block text-sm`}>{link[1]} →</Link>}
               </li>
