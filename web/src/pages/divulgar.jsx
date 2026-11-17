@@ -43,7 +43,7 @@ export function Divulgar({ est }) {
         </p>
         <label htmlFor="link-divulgar" className="mt-4 block text-sm font-semibold">Link da sua página</label>
         <input id="link-divulgar" readOnly value={url} onFocus={(e) => e.target.select()}
-          className="mt-1 h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground" />
+          className="mt-1 h-11 w-full rounded-xl border border-border bg-surface px-3 text-foreground" />
         <div className="mt-3 flex flex-wrap gap-2">
           <button type="button" className={estilos.secundario} onClick={copiar}>
             <Copy className="h-4 w-4" aria-hidden="true" /> {copiado ? 'Link copiado' : 'Copiar link'}
@@ -76,7 +76,7 @@ export function Divulgar({ est }) {
           </p>
           <label htmlFor="codigo-botao" className="mt-3 block text-sm font-semibold">Código</label>
           <textarea id="codigo-botao" readOnly rows={4} value={codigo} onFocus={(e) => e.target.select()}
-            className="mt-1 w-full rounded-lg border border-border bg-background p-3 font-mono text-xs text-foreground" />
+            className="mt-1 w-full rounded-xl border border-border bg-surface p-3 font-mono text-xs text-foreground" />
           <button type="button" className={`${estilos.secundario} mt-2`} onClick={() => copiarTexto(codigo, setCodigoCopiado)}>
             <Copy className="h-4 w-4" aria-hidden="true" /> {codigoCopiado ? 'Código copiado' : 'Copiar código'}
           </button>

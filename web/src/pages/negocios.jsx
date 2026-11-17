@@ -74,7 +74,7 @@ export function NegociosPage() {
 
       <section aria-labelledby="perguntas" className="border-t border-border py-10">
         <h2 id="perguntas" className="text-2xl font-bold">Perguntas frequentes</h2>
-        <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-surface">
+        <div className="mt-6 divide-y divide-border vidro rounded-2xl">
           {PERGUNTAS.map(([p, r]) => (
             <details key={p} className="group p-5">
               <summary className="cursor-pointer list-none font-semibold marker:hidden">

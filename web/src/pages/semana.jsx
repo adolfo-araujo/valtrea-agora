@@ -125,7 +125,7 @@ export function PublicarSemana({ id, agenda, aoPublicar }) {
         <div>
           <label htmlFor="semanas" className="text-sm font-semibold">Por quantas semanas</label>
           <select id="semanas" value={semanas} onChange={(e) => setSemanas(e.target.value)}
-            className="mt-1 h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground">
+            className="mt-1 h-11 w-full rounded-xl border border-border bg-surface px-3 text-foreground">
             <option value="1">Próximos 7 dias</option>
             <option value="2">Próximas 2 semanas</option>
             <option value="4">Próximas 4 semanas</option>

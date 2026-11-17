@@ -20,7 +20,7 @@ export function Selecao({ rotulo, valor, aoMudar, opcoes, vazio }) {
     <div>
       <label htmlFor={id} className="text-sm font-semibold">{rotulo}</label>
       <select id={id} value={valor} onChange={(e) => aoMudar(e.target.value)}
-        className="mt-1 h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground">
+        className="mt-1 h-11 w-full rounded-xl border border-border bg-surface px-3 text-foreground">
         {vazio !== undefined && <option value="">{vazio}</option>}
         {opcoes.map(([v, r]) => <option key={v} value={v}>{r}</option>)}
       </select>
@@ -75,7 +75,7 @@ export function BuscaHorarios() {
         <div>
           <label htmlFor={idBusca} className="text-sm font-semibold">Cidade ou bairro</label>
           <input id={idBusca} value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Ex.: Tijuca"
-            className="mt-1 h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground placeholder:text-muted" />
+            className="mt-1 h-11 w-full rounded-xl border border-border bg-surface px-3 text-foreground placeholder:text-muted" />
         </div>
         <Selecao rotulo="Serviço" valor={tipo} aoMudar={setTipo} opcoes={opcoesTipo} vazio="Todos" />
         <button type="submit" className={estilos.primario} disabled={enviando}>{enviando ? 'Procurando…' : 'Procurar'}</button>
