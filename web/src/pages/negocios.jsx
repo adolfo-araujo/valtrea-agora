@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CalendarClock, Megaphone, QrCode, ShieldCheck, Smartphone, UserCheck } from 'lucide-react'
 import { useAuth } from '../lib/auth'
-import { Pagina, estilos } from '../components/ui'
+import { Pagina, estilos, Abertura, IconeVidro } from '../components/ui'
 
 const PASSOS = [
   { titulo: 'Cadastre o seu negócio', texto: 'Nome, endereço, telefone e o tipo de serviço. Analisamos antes de aparecer na busca, para que só negócios reais estejam lá.' },
@@ -31,35 +31,26 @@ export function NegociosPage() {
   const destino = perfil ? '/negocio' : '/cadastro'
   return (
     <Pagina>
-      <section className="py-8 sm:py-12">
-        <p className="text-sm font-bold text-primary">Para salões, barbearias e outros serviços</p>
-        <h1 className="mt-2 max-w-3xl text-4xl font-black leading-tight tracking-tight sm:text-5xl">
-          Encha os horários vagos sem passar o dia no WhatsApp.
-        </h1>
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
-          Publique os horários livres e quem está procurando perto reserva na hora. Grátis durante os testes, sem
-          mensalidade e sem taxa por reserva.
-        </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link to={destino} className={estilos.primario}>{perfil ? 'Ir para Meu negócio' : 'Cadastrar meu negócio grátis'}</Link>
-          <Link to="/" className={estilos.secundario}>Ver como o cliente vê</Link>
-        </div>
-      </section>
+      <Abertura selo="Para salões, barbearias e outros serviços" titulo="Encha os horários vagos" destaque="sem passar o dia no WhatsApp."
+        texto="Publique os horários livres e quem está procurando perto reserva na hora. Grátis durante os testes, sem mensalidade e sem taxa por reserva.">
+        <Link to={destino} className={estilos.primario}>{perfil ? 'Ir para Meu negócio' : 'Cadastrar meu negócio grátis'}</Link>
+        <Link to="/" className={estilos.secundario}>Ver como o cliente vê</Link>
+      </Abertura>
 
-      <section aria-labelledby="vantagens" className="border-t border-border py-10">
-        <h2 id="vantagens" className="text-2xl font-bold">O que muda no seu dia</h2>
+      <section aria-labelledby="vantagens" className="py-10">
+        <h2 id="vantagens" className="text-3xl font-extrabold sm:text-4xl">O que muda no seu dia</h2>
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">
           {VANTAGENS.map(({ icone: Icone, titulo, texto }) => (
             <li key={titulo} className={estilos.cartao}>
-              <Icone className="h-6 w-6 text-primary" aria-hidden="true" />
-              <h3 className="mt-3 font-bold">{titulo}</h3>
+              <IconeVidro icone={Icone} />
+              <h3 className="mt-4 text-lg font-extrabold">{titulo}</h3>
               <p className="mt-1 text-sm leading-relaxed text-muted">{texto}</p>
             </li>
           ))}
         </ul>
       </section>
 
-      <section aria-labelledby="como-comecar" className="border-t border-border py-10">
+      <section aria-labelledby="como-comecar" className="py-10">
         <h2 id="como-comecar" className="text-2xl font-bold">Como começar</h2>
         <ol className="mt-6 grid gap-4 sm:grid-cols-3">
           {PASSOS.map(({ titulo, texto }, n) => (
@@ -72,8 +63,8 @@ export function NegociosPage() {
         </ol>
       </section>
 
-      <section aria-labelledby="perguntas" className="border-t border-border py-10">
-        <h2 id="perguntas" className="text-2xl font-bold">Perguntas frequentes</h2>
+      <section aria-labelledby="perguntas" className="py-10">
+        <h2 id="perguntas" className="text-3xl font-extrabold sm:text-4xl">Perguntas frequentes</h2>
         <div className="mt-6 divide-y divide-border vidro rounded-2xl">
           {PERGUNTAS.map(([p, r]) => (
             <details key={p} className="group p-5">

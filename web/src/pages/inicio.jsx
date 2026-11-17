@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CalendarCheck, Search, ShieldCheck, Store } from 'lucide-react'
 import { useAuth } from '../lib/auth'
-import { Pagina, estilos, ComoInstalarNoIphone } from '../components/ui'
+import { Pagina, estilos, ComoInstalarNoIphone, Abertura } from '../components/ui'
 import { BuscaHorarios } from './horarios'
 
 const PASSOS = [
@@ -15,20 +15,14 @@ export function InicioPage() {
   return (
     <Pagina>
       {!perfil && (
-        <section className="py-8 sm:py-12">
-          <p className="text-sm font-bold text-primary">Valtrea Agora · em testes</p>
-          <h1 className="mt-2 max-w-2xl text-4xl font-black leading-tight tracking-tight sm:text-5xl">
-            Oportunidades que acontecem perto de você.
-          </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
-            Horários vagos de salões, barbearias e outros serviços da sua região, para reservar ainda hoje.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <>
+          <Abertura selo="Valtrea Agora · em testes" titulo="Oportunidades que acontecem" destaque="perto de você."
+            texto="Horários vagos de salões, barbearias e outros serviços da sua região, para reservar ainda hoje.">
             <Link to="/cadastro" className={estilos.primario}>Criar conta grátis</Link>
             <Link to="/entrar" className={estilos.secundario}>Já tenho conta</Link>
-          </div>
+          </Abertura>
           <ComoInstalarNoIphone />
-      </section>
+        </>
       )}
       <section aria-labelledby="horarios-vagos" className={perfil ? '' : estilos.cartao}>
         {perfil ? (
@@ -39,8 +33,8 @@ export function InicioPage() {
         <BuscaHorarios />
       </section>
       {!perfil && (
-        <section aria-labelledby="como-funciona" className="mt-10 border-t border-border py-10">
-          <h2 id="como-funciona" className="text-2xl font-bold">Como funciona</h2>
+        <section aria-labelledby="como-funciona" className="mt-6 py-10">
+          <h2 id="como-funciona" className="text-3xl font-extrabold sm:text-4xl">Como funciona</h2>
           <ol className="mt-8 grid gap-6 sm:grid-cols-3">
             {PASSOS.map(({ icone: Icone, titulo, texto, link }) => (
               <li key={titulo} className={estilos.cartao}>
