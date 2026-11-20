@@ -1,78 +1,199 @@
+<div align="center">
+
 # Valtrea Agora
 
-Horários vagos de salões, barbearias e outros serviços da região, para reservar ainda hoje. Estabelecimentos publicam os horários; clientes reservam sem pagar nada no app (o pagamento é no local).
+**Encontre horários disponíveis perto de você. Reserve para hoje.**
 
-| Parte | Pasta | Tecnologia | Onde roda |
-| --- | --- | --- | --- |
-| API | `api/` | Java 21, Spring Boot 4.1, PostgreSQL, Flyway | Render (`valtrea-agora-api.onrender.com`) |
-| Site | `web/` | React, Vite, Tailwind | Vercel (`agora.valtrea.com.br`) |
-| App | `android/` | Kotlin, Jetpack Compose | Google Play |
+Plataforma para divulgar e reservar horários vagos em salões, barbearias e outros estabelecimentos de serviços locais — com busca pública, reservas gratuitas no aplicativo e atendimento pago diretamente no estabelecimento.
 
-Qualquer pessoa vê os horários e os estabelecimentos aprovados no site, sem conta. Para reservar, cadastrar um estabelecimento e denunciar, é preciso conta com o e-mail confirmado. A mesma conta pode ser cliente e dona de estabelecimento.
+[**Acessar o site**](https://agora.valtrea.com.br/) · [**Repositório**](https://github.com/adolfo-araujo/valtrea-agora)
+
+**Java 21** · **Spring Boot 4.1** · **PostgreSQL** · **React** · **Kotlin** · **Docker**
+
+</div>
+
+---
+
+## Visão geral
+
+O **Valtrea Agora** conecta estabelecimentos com horários vagos a pessoas que procuram serviços na região, inclusive no mesmo dia. Estabelecimentos aprovados publicam horários e acompanham sua agenda; clientes pesquisam, reservam e gerenciam os agendamentos em um só lugar.
+
+A consulta de horários e estabelecimentos é pública. Para reservar, cadastrar um estabelecimento ou fazer uma denúncia, é preciso criar uma conta e confirmar o e-mail.
+
+> **Importante:** a plataforma não cobra pela reserva dentro do aplicativo. Os preços exibidos são informativos; eventual pagamento pelo serviço é realizado **no estabelecimento**. O projeto não processa cartão, Pix ou outros pagamentos pelo aplicativo.
+
+## Funcionalidades
+
+### Para clientes
+
+- Buscar horários por **estado, cidade, bairro e tipo de serviço**.
+- Consultar horários e estabelecimentos aprovados sem criar conta.
+- Visualizar horários disponíveis nos próximos **7 dias**.
+- Reservar um horário e acompanhar suas reservas futuras.
+- Cancelar uma reserva antes do atendimento e receber notificações por e-mail.
+- Denunciar estabelecimentos quando necessário.
+
+### Para estabelecimentos
+
+- Cadastrar estabelecimentos com nome, categoria, endereço e telefone, sujeitos à aprovação administrativa.
+- Publicar até **20 horários por operação**, entre **10 minutos e 60 dias** a partir do momento do cadastro.
+- Informar o serviço, a duração e o preço de referência dos atendimentos.
+- Gerenciar a agenda, acompanhar reservas e registrar atendimentos concluídos ou ausências.
+- Cancelar reservas e receber notificações por e-mail.
+
+### Para administração
+
+- Analisar pedidos de cadastro de estabelecimentos, aprovando ou recusando com justificativa.
+- Acompanhar denúncias: após **3 denúncias de clientes diferentes**, um estabelecimento sai da busca e retorna à fila de análise.
+- Consultar métricas agregadas por meio de uma rota administrativa.
 
 ## Como funciona
 
-1. O dono cadastra o estabelecimento (nome, tipo, endereço, bairro, cidade, telefone). Ele fica **em análise** e só aparece depois que a administração aprova no painel. Se for recusado, o dono recebe o motivo por e-mail; ao corrigir, volta para a fila.
-2. O dono publica horários vagos (até 20 de uma vez, de daqui a 10 minutos até 60 dias), com serviço, duração e preço (só informativo).
-3. O cliente procura por estado, cidade ou bairro (sem acento) e tipo de serviço, vê os horários dos próximos 7 dias e reserva. Até 3 reservas futuras por pessoa. Dois cliques no mesmo horário ao mesmo tempo: só um reserva (trava da linha + índice único parcial).
-4. O dono recebe um e-mail e vê na agenda o primeiro nome do cliente e, se ele informou, o telefone e a observação. Depois do horário, marca "atendido" ou "não veio".
-5. Cancelamento: o cliente cancela antes do horário (o horário volta a ficar livre) ou o dono cancela (não volta). O outro lado recebe um e-mail.
-6. Com 3 denúncias de clientes diferentes, o estabelecimento sai da busca e volta para a fila de análise.
+```mermaid
+flowchart LR
+    A[Estabelecimento cadastra perfil] --> B{Aprovação administrativa}
+    B -->|Aprovado| C[Publica horários disponíveis]
+    B -->|Recusado| D[Recebe motivo e pode corrigir]
+    C --> E[Cliente encontra o horário]
+    E --> F[Reserva com conta confirmada]
+    F --> G[Estabelecimento acompanha a agenda]
+    G --> H[Atendimento ou cancelamento]
+```
+
+**Regras de reserva descritas no projeto:** até **3 reservas futuras por pessoa**; na concorrência pelo mesmo horário, a lógica de bloqueio e o índice único parcial do banco são usados para evitar reservas duplicadas. Quando o cliente cancela antes do horário, a vaga volta a ficar disponível; quando o estabelecimento cancela, não volta automaticamente.
+
+## Tecnologias e arquitetura
+
+| Camada | Diretório | Tecnologias | Ambiente documentado |
+|---|---|---|---|
+| API | `api/` | Java 21, Spring Boot 4.1, PostgreSQL, Flyway | Render |
+| Aplicação web | `web/` | React, Vite, Tailwind CSS | Vercel |
+| Aplicativo Android | `android/` | Kotlin, Jetpack Compose | Android / distribuição conforme a versão do app |
+
+```mermaid
+flowchart TB
+    W[Site React / Vite] --> API[API REST · Spring Boot]
+    M[Aplicativo Android · Kotlin] --> API
+    API --> DB[(PostgreSQL)]
+    API --> MAIL[Serviço de envio de e-mails]
+    ADMIN[Painel de moderação] --> API
+```
+
+- A API concentra autenticação, regras de disponibilidade, reservas, gestão de estabelecimentos e moderação.
+- O frontend web permite consultas públicas e os fluxos de usuários autenticados.
+- O aplicativo Android oferece acesso móvel às funcionalidades compatíveis com sua versão.
+- O Flyway organiza a evolução do esquema do banco.
 
 ## Segurança e privacidade
 
-- Sem pagamento pelo app: não há cartão, Pix nem dados bancários. Os Termos proíbem pedir pagamento antecipado e a página avisa o cliente.
-- O estabelecimento vê só o primeiro nome do cliente; nunca o e-mail nem as outras reservas. A administração vê o primeiro nome do dono e os motivos das denúncias, nunca quem denunciou.
-- Estabelecimento em análise ou recusado responde 404 para todos, menos para o dono.
-- Limite por IP para reservar, cancelar, publicar horários e denunciar (120 por hora).
-- Excluir a conta apaga na hora as reservas, os estabelecimentos (com horários e reservas) e as denúncias.
-- Retenção: horários e reservas 90 dias depois do horário; recusados não corrigidos 30 dias; cadastros nunca confirmados 30 dias.
-- Os mesmos controles do Valtrea Pay, do Volta e do Pulso: bcrypt, sessões de uso único, bloqueio de login, limites por IP, cabeçalhos de segurança, CORS só para o site, Sentry sem dados pessoais, backup diário criptografado, OSV-Scanner e gitleaks no CI.
+Os seguintes controles são **descritos na implementação/documentação do projeto** (não equivalem a uma auditoria de segurança independente):
 
-## Rotas da API
+- Cadastro e operações privadas exigem confirmação de e-mail.
+- Na visualização do estabelecimento, apenas o primeiro nome do cliente é exibido, sem expor seu e-mail ou as reservas de terceiros.
+- Estabelecimentos não aprovados ou em análise não são exibidos publicamente; a API usa respostas 404 para recursos não acessíveis.
+- Controle de concorrência para impedir reservas simultâneas do mesmo horário.
+- Limites por IP para operações de reserva, cancelamento, publicação de horários e denúncia.
+- Recursos administrativos restritos a usuários autorizados.
+- Exclusão de conta e regras de retenção de dados documentadas.
+- Controles adicionais descritos: hash de senhas com bcrypt, sessões, CORS restrito, cabeçalhos de segurança, backups e verificações automatizadas.
 
-Todas em `/api/v1`. Documentação interativa em `/swagger-ui.html`.
+**Retenção documentada:** horários e reservas até 90 dias após o horário; cadastros não confirmados até 30 dias; solicitações recusadas sem correção até 30 dias. Confira a política vigente antes de usar esses prazos como compromisso público.
 
-| Método | Rota | O que faz |
-| --- | --- | --- |
-| POST | `/auth/cadastro`, `/auth/login`, `/auth/renovar`, `/auth/sair` | Conta e sessão |
-| POST | `/auth/confirmar-email`, `/auth/reenviar-confirmacao`, `/auth/esqueci-senha`, `/auth/redefinir-senha` | Códigos por e-mail |
-| GET, PATCH, DELETE | `/eu` | Perfil, troca do nome e exclusão da conta |
-| GET | `/eu/dados` | Baixar meus dados (JSON) |
-| POST | `/eu/termos` | Aceite da versão vigente dos Termos |
-| GET | `/publico/horarios`, `/publico/estabelecimentos`, `/publico/estabelecimentos/{id}` | Busca sem conta |
-| GET | `/estabelecimentos/{id}` | Detalhe, dizendo se é seu ou se você denunciou |
-| POST | `/horarios/{id}/reserva` | Reservar |
-| GET | `/eu/reservas` | As suas reservas |
-| POST | `/reservas/{id}/cancelar`, `/reservas/{id}/status` | Cancelar (cliente ou dono) e marcar presença (dono) |
-| GET, POST | `/eu/estabelecimentos`, `/estabelecimentos` | Os seus estabelecimentos e cadastrar (até 3) |
-| PUT, DELETE | `/estabelecimentos/{id}` | Editar e apagar |
-| GET, POST | `/estabelecimentos/{id}/agenda`, `/estabelecimentos/{id}/horarios` | Agenda do dono e publicar horários |
-| DELETE | `/horarios/{id}` | Apagar horário sem reserva |
-| POST | `/estabelecimentos/{id}/denuncia` | Denunciar |
-| GET, POST | `/admin/estabelecimentos`, `/admin/estabelecimentos/{id}/aprovar`, `/admin/estabelecimentos/{id}/recusar` | Fila de análise (só administradores) |
-| GET | `/admin/metricas` | Números de uso somados (só administradores) |
+## API REST
 
-## Rodar no computador
+Prefixo das rotas: `/api/v1`. A documentação interativa é apresentada em `/swagger-ui.html` no ambiente em que a API estiver disponível.
+
+| Método | Endpoint | Finalidade |
+|---|---|---|
+| `POST` | `/auth/cadastro`, `/auth/login`, `/auth/renovar`, `/auth/sair` | Conta e sessão |
+| `POST` | `/auth/confirmar-email`, `/auth/reenviar-confirmacao` | Confirmação de e-mail |
+| `POST` | `/auth/esqueci-senha`, `/auth/redefinir-senha` | Recuperação de acesso |
+| `GET`, `PATCH`, `DELETE` | `/eu` | Consultar, alterar ou excluir a conta |
+| `GET` | `/eu/dados` | Exportar os próprios dados em JSON |
+| `POST` | `/eu/termos` | Aceitar termos vigentes |
+| `GET` | `/publico/horarios`, `/publico/estabelecimentos` | Busca pública |
+| `GET` | `/publico/estabelecimentos/{id}` | Detalhes públicos |
+| `GET` | `/estabelecimentos/{id}` | Detalhes para usuário autenticado |
+| `POST` | `/horarios/{id}/reserva` | Reservar um horário |
+| `GET` | `/eu/reservas` | Consultar as próprias reservas |
+| `POST` | `/reservas/{id}/cancelar`, `/reservas/{id}/status` | Cancelamento e presença |
+| `GET`, `POST` | `/eu/estabelecimentos`, `/estabelecimentos` | Gerenciar cadastro de estabelecimentos |
+| `PUT`, `DELETE` | `/estabelecimentos/{id}` | Editar ou excluir estabelecimento |
+| `GET`, `POST` | `/estabelecimentos/{id}/agenda`, `/estabelecimentos/{id}/horarios` | Agenda e horários |
+| `DELETE` | `/horarios/{id}` | Excluir horário sem reserva |
+| `POST` | `/estabelecimentos/{id}/denuncia` | Denunciar estabelecimento |
+| `GET`, `POST` | `/admin/estabelecimentos`, `/admin/estabelecimentos/{id}/aprovar`, `/admin/estabelecimentos/{id}/recusar` | Moderação |
+| `GET` | `/admin/metricas` | Indicadores agregados |
+
+> Consulte o Swagger e o código-fonte para confirmar os corpos das requisições, respostas e permissões de cada endpoint.
+
+## Executar localmente
+
+### Pré-requisitos
+
+- **JDK 21** e Maven compatível com o projeto.
+- **Node.js** e npm.
+- **Docker**, caso use o PostgreSQL em container.
+- Variáveis de ambiente configuradas conforme os arquivos da API (sem inserir segredos no Git).
+
+### 1. Banco PostgreSQL
+
+Configure uma instância local do PostgreSQL, preferencialmente pelo Docker, com banco, usuário e **senha próprios de desenvolvimento**. Conecte a API a essa instância com as propriedades ou variáveis exigidas pelo projeto.
+
+### 2. Backend
+
+No terminal, a partir da raiz do repositório:
 
 ```bash
-# Banco
-docker run -d --name agora-db -p 5432:5432 -e POSTGRES_USER=valtrea -e POSTGRES_PASSWORD=valtrea -e POSTGRES_DB=valtrea_agora postgres:18-alpine
-# API (porta 8080)
 cd api
-VALTREA_JWT_SECRET=$(openssl rand -hex 32) \
-VALTREA_URL_SITE=http://localhost:5175 VALTREA_CORS=http://localhost:5175 mvn spring-boot:run
-# Site (porta 5175)
-cd ../web && npm install && npm run dev
+# Configure o banco e os segredos localmente antes de iniciar
+mvn spring-boot:run
 ```
 
-Sem SMTP configurado, os e-mails (códigos e avisos) aparecem no log da API. O app Android (variante `debug`) usa `http://10.0.2.2:8080/`.
+A API utiliza, entre outras, variáveis como `VALTREA_JWT_SECRET`, `VALTREA_URL_SITE`, `VALTREA_CORS` e as credenciais do banco. Gere um segredo JWT forte e nunca o envie ao GitHub.
 
-## Publicar
+### 3. Frontend
 
-1. **Banco (Neon):** crie o projeto `valtrea-agora` na região **AWS US East 1 (N. Virginia)**, a mesma do Render. O teste de capacidade do Pay mostrou que o banco em São Paulo com a API nos EUA deixa cada ida ao banco com ~120 ms.
-2. **API (Render):** New → Blueprint → repositório `valtrea-agora`. Preencha `DATABASE_URL` (`jdbc:postgresql://<host>/<banco>?sslmode=require`), `DATABASE_USER`, `DATABASE_PASSWORD` e `RESEND_API_KEY`.
-3. **Site (Vercel):** Add New → Project → repositório `valtrea-agora`, **Root Directory** `web`, framework Vite. Em Environment Variables, `VITE_API_URL` = `https://valtrea-agora-api.onrender.com`. Em Domains, adicione `agora.valtrea.com.br`.
-4. **DNS:** crie o registro CNAME que a Vercel mostrar para `agora`.
-5. **App:** a variante `release` já aponta para `https://valtrea-agora-api.onrender.com/`.
+Em outro terminal, a partir da raiz do repositório:
 
+```bash
+cd web
+npm install
+npm run dev
+```
+
+No ambiente de desenvolvimento mostrado na documentação, o site usa `http://localhost:5175` e a API a porta `8080`. Confira as portas na configuração atual.
+
+**E-mails locais:** conforme o README anterior, quando não há SMTP configurado, códigos e avisos podem aparecer nos logs da API. Essa opção deve ficar restrita ao desenvolvimento; **não registre códigos sensíveis em produção**.
+
+**Android:** abra `android/` no Android Studio, verifique a URL da API configurada para a variante desejada e execute no emulador ou dispositivo.
+
+## Implantação
+
+O roteiro documentado para este repositório utiliza:
+
+1. **PostgreSQL gerenciado**, com migrações Flyway.
+2. **Render** para a API em `api/`, configurando `DATABASE_URL`, `DATABASE_USER`, `DATABASE_PASSWORD` e integração de e-mail como `RESEND_API_KEY`, quando aplicável.
+3. **Vercel** para a aplicação em `web/`, com `VITE_API_URL` apontando para a API implantada.
+4. **DNS** para o domínio do site, caso utilizado.
+5. Configuração separada da URL da API para a variante de produção do aplicativo Android.
+
+> Endereços de referência documentados: `https://agora.valtrea.com.br/` (site) e `https://valtrea-agora-api.onrender.com/` (API). A disponibilidade desses endereços não foi verificada nesta revisão.
+
+## Próximos passos de documentação
+
+- Adicionar capturas reais de **busca**, **reserva** e **agenda do estabelecimento**.
+- Adicionar um vídeo curto demonstrando o fluxo completo de reserva.
+- Documentar os comandos de testes e os resultados do CI, depois de confirmá-los no repositório.
+- Incluir um diagrama do modelo de dados e os principais relacionamentos.
+- Separar instruções avançadas de deploy e a referência completa da API em `docs/`, para manter este README mais objetivo.
+
+## Projeto
+
+Desenvolvido no contexto dos produtos digitais da **Valtrea**, com foco em disponibilidade de serviços locais, experiência do usuário e organização de reservas.
+
+**Site institucional:** https://www.valtrea.com.br/
+
+---
+
+*Esta documentação foi reorganizada a partir do README apresentado em capturas de tela. Revise as variáveis de ambiente, URLs e rotas de acordo com o código atual antes de publicar alterações.*
